@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/hmrc/agent-mtd-identifiers.svg?branch=master)](https://travis-ci.org/hmrc/agent-mtd-identifiers) [ ![Download](https://api.bintray.com/packages/hmrc/releases/agent-mtd-identifiers/images/download.svg) ](https://bintray.com/hmrc/releases/agent-mtd-identifiers/_latestVersion)
 
-This is a placeholder README.md for a new repository
+Library for MTD identifiers within the Agents domain. 
 
 ### License
 
