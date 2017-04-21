@@ -1,24 +1,19 @@
-import sbt._
 import sbt.Keys._
-import uk.gov.hmrc.PublishingSettings._
-import uk.gov.hmrc.SbtAutoBuildPlugin
+import sbt._
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object HmrcBuild extends Build {
 
   import uk.gov.hmrc._
-  import DefaultBuildSettings._
-  import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
-  import uk.gov.hmrc.PublishingSettings._
 
   val appName = "agent-mtd-identifiers"
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.7",
       libraryDependencies ++= AppDependencies(),
-      crossScalaVersions := Seq("2.11.8"),
+      crossScalaVersions := Seq("2.11.7"),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
         "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
@@ -28,7 +23,9 @@ object HmrcBuild extends Build {
 
 private object AppDependencies {
 
-  val compile = Seq()
+  val compile = Seq(
+    "uk.gov.hmrc" %% "domain" % "4.1.0"
+  )
 
   trait TestDependencies {
     lazy val scope: String = "test"
@@ -38,7 +35,7 @@ private object AppDependencies {
   object Test {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
-        "org.scalatest" %% "scalatest" % "2.2.4" % scope,
+        "org.scalatest" %% "scalatest" % "3.0.1" % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope
       )
     }.test
