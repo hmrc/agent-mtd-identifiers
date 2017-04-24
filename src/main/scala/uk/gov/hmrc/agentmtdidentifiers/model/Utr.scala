@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import uk.gov.hmrc.domain.Modulus11Check
+import uk.gov.hmrc.domain.{Modulus11Check, TaxIdentifier}
+
+case class Utr(value: String) extends TaxIdentifier
 
 object Utr {
 
