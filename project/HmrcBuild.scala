@@ -1,5 +1,6 @@
 import sbt.Keys._
 import sbt._
+import play.core.PlayVersion
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object HmrcBuild extends Build {
@@ -24,6 +25,7 @@ object HmrcBuild extends Build {
 private object AppDependencies {
 
   val compile = Seq(
+    "com.typesafe.play" %% "play-json" % PlayVersion.current,
     "uk.gov.hmrc" %% "domain" % "4.1.0"
   )
 

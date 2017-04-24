@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import uk.gov.hmrc.domain.{Modulus11Check, TaxIdentifier}
+import uk.gov.hmrc.domain.{Modulus11Check, SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
 case class Utr(value: String) extends TaxIdentifier
 
@@ -29,6 +29,9 @@ object Utr {
       case utrPattern(_*) => UtrCheck.isValid(utr)
       case _ => false
     }
+
+  implicit val utrReads = new SimpleObjectReads[Utr]("value", Utr.apply)
+  implicit val utrWrites = new SimpleObjectWrites[Utr](_.value)
 }
 
 object UtrCheck extends Modulus11Check {

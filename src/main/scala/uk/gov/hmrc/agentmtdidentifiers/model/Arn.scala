@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import uk.gov.hmrc.domain.{Modulus23Check, TaxIdentifier}
+import uk.gov.hmrc.domain.{Modulus23Check, SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
 case class Arn(value: String) extends TaxIdentifier
 
@@ -28,6 +28,9 @@ object Arn {
       case arnPattern(_*) => ArnCheck.isValid(arn)
       case _ => false
     }
+
+  implicit val arnReads = new SimpleObjectReads[Arn]("value", Arn.apply)
+  implicit val arnWrites = new SimpleObjectWrites[Arn](_.value)
 }
 
 private object ArnCheck extends Modulus23Check {
