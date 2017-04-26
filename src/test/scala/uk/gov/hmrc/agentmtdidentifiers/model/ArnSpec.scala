@@ -29,7 +29,7 @@ class ArnSpec extends FlatSpec with Matchers {
   }
 
   it should "be false when empty" in {
-    Arn.isValid("tARN0000001") shouldBe false
+    Arn.isValid("") shouldBe false
   }
 
   it should "be false when non capital first character" in {
