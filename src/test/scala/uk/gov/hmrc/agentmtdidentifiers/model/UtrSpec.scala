@@ -35,20 +35,12 @@ class UtrSpec extends FlatSpec with Matchers {
     Utr.isValid("") shouldBe false
   }
 
-  it should "be false when it is all zeros" in {
-    Utr.isValid("0000000000") shouldBe false
-  }
-
   it should "be false when it has fewer than 10 digits" in {
     Utr.isValid("200000") shouldBe false
   }
 
   it should "be false when it has non-digit characters" in {
     Utr.isValid("200000000B") shouldBe false
-  }
-
-  it should "be false when it us akk non-digit characters" in {
-    Utr.isValid("ABCDEFGHIJ") shouldBe false
   }
 
   it should "be false when it has non-alphanumeric characters" in {
