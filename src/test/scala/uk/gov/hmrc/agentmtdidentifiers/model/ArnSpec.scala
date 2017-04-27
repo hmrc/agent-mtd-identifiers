@@ -24,8 +24,16 @@ class ArnSpec extends FlatSpec with Matchers {
     Arn.isValid("TARN0000001") shouldBe true
   }
 
+  it should "be false when characters 2-4 are not \"ARN\"" in {
+    Arn.isValid("TABC0000001") shouldBe false
+  }
+
   it should "be false with lowercase \"arn\"" in {
     Arn.isValid("Tarn0000001") shouldBe false
+  }
+
+  it should "be false when empty" in {
+    Arn.isValid("") shouldBe false
   }
 
   it should "be false when non capital first character" in {
