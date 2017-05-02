@@ -30,6 +30,6 @@ object MtdItId {
       case _ => false
     }
 
-  implicit val utrReads = new SimpleObjectReads[MtdItId]("value", MtdItId.apply)
-  implicit val utrWrites = new SimpleObjectWrites[MtdItId](_.value)
+  implicit val reads = new SimpleObjectReads[MtdItId]("value", MtdItId.apply)
+  implicit val writes = new SimpleObjectWrites[MtdItId](_.value)
 }
