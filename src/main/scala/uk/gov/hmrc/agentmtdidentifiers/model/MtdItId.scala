@@ -24,8 +24,8 @@ object MtdItId {
 
   private val pattern = "^[0-9A-Za-z]{1,15}$".r
 
-  def isValid(mtditid: String): Boolean =
-    mtditid match {
+  def isValid(mtdItId: String): Boolean =
+    mtdItId match {
       case pattern(_*) => true
       case _ => false
     }
