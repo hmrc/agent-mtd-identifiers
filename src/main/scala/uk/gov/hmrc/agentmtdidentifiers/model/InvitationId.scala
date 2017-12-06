@@ -6,9 +6,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, __}
 
-case class InvitationId(value: String) {
-  require(value.size == 13, "The size of invitation id should not exceed 13")
-}
+case class InvitationId(value: String)
 
 object InvitationId {
   private def idWrites = (__ \ "value")
