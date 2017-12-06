@@ -1,6 +1,6 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import java.nio.charset.{Charset, StandardCharsets}
+import java.nio.charset.StandardCharsets
 
 import org.joda.time.DateTime
 import org.scalatest.{FlatSpec, Matchers}
@@ -16,14 +16,14 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     invWithoutPrefix('C').value.head shouldBe 'C'
   }
 
-  it should "create an identifier 19 characters long" in {
-    invWithoutPrefix('A').value.length shouldBe 19
+  it should "create an identifier 13 characters long" in {
+    invWithoutPrefix('A').value.length shouldBe 13
   }
 
   it should "append two alphanumeric checksum characters using CRC-10" in {
-    invWithoutPrefix('A').value.takeRight(2) shouldBe checksumDigits("ABERULMHCKKZCE5RF")
-    invWithoutPrefix('B').value.takeRight(2) shouldBe checksumDigits("BBERULMHCKKZCE5RF")
-    invWithoutPrefix('C').value.takeRight(2) shouldBe checksumDigits("CBERULMHCKKZCE5RF")
+    invWithoutPrefix('A').value.takeRight(2) shouldBe checksumDigits("ABERULMHCKK")
+    invWithoutPrefix('B').value.takeRight(2) shouldBe checksumDigits("BBERULMHCKK")
+    invWithoutPrefix('C').value.takeRight(2) shouldBe checksumDigits("CBERULMHCKK")
   }
 
   it should "give a different identifier whenever any of the arguments change" in {
@@ -84,30 +84,12 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     }
   }
 
-  "bytesTo5BitNums" should "return 16 5-bit numbers from of the bytes' bits" in {
+  "bytesTo5BitNums" should "take 8 bytes and return 10 5-bit numbers from of the bytes' bits" in {
     val ff = 0xFF.toByte
-    bytesTo5BitNums(Seq(0,0,0,0,0,0,0,0,0,0)) shouldBe Seq(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-    bytesTo5BitNums(Seq(1,0,0,0,0,0,0,0,0,0)) shouldBe Seq(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-    bytesTo5BitNums(Seq(0x0FF.toByte,0,0,0,0,0,0,0,0,0)) shouldBe Seq(31,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-    bytesTo5BitNums(Seq(ff,ff,ff,ff,ff,ff,ff,ff,ff,ff)) shouldBe Seq(31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31)
-  }
-
-  it should "throw IllegalArgumentException if the passed sequence does not contain a multiple of 5 bytes" in {
-    an[IllegalArgumentException] shouldBe thrownBy {
-      bytesTo5BitNums(Seq.empty)
-    }
-    an[IllegalArgumentException] shouldBe thrownBy {
-      bytesTo5BitNums(Seq(1))
-    }
-    an[IllegalArgumentException] shouldBe thrownBy {
-      bytesTo5BitNums(Seq(1, 2, 3, 4))
-    }
-    an[IllegalArgumentException] shouldBe thrownBy {
-      bytesTo5BitNums(Seq(1, 2, 3, 4, 5, 6))
-    }
-    an[IllegalArgumentException] shouldBe thrownBy {
-      bytesTo5BitNums(Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
-    }
+    bytesTo5BitNums(Seq(0,0,0,0,0,0,0,0)) shouldBe Seq(0,0,0,0,0,0,0,0,0,0)
+    bytesTo5BitNums(Seq(1,0,0,0,0,0,0,0)) shouldBe Seq(1,0,0,0,0,0,0,0,0,0)
+    bytesTo5BitNums(Seq(0x0FF.toByte,0,0,0,0,0,0,0)) shouldBe Seq(31,7,0,0,0,0,0,0,0,0)
+    bytesTo5BitNums(Seq(ff,ff,ff,ff,ff,ff,ff,ff)) shouldBe Seq(31,31,31,31,31,31,31,31,31,31)
   }
 
   "to5BitAlphaNumeric" should "return a unique character for each of the 32 values of the 5 bit number" in {
@@ -149,5 +131,26 @@ class InvitationIdSpec extends FlatSpec with Matchers {
 
   it should "produce checksums from either a String's bytes or bytes directly" in {
     CRC10.calculate("ABC") shouldBe CRC10.calculate("ABC".getBytes(StandardCharsets.UTF_8))
+  }
+
+
+  "isValid" should "be true for a valid InvitationId" in {
+    InvitationId.isValid("ABERULMHCKKW3") shouldBe true
+  }
+
+  it should "be false when it has more than 13 digits" in {
+    InvitationId.isValid("ABERULMHCKKW3A") shouldBe false
+  }
+
+  it should "be false when it is empty" in {
+    InvitationId.isValid("") shouldBe false
+  }
+
+  it should "be false when it has non-alphanumeric characters" in {
+    InvitationId.isValid("ABERUL!HCKKW3") shouldBe false
+  }
+
+  it should "be false when the checksum digits fail a checksum check" in {
+    InvitationId.isValid("ABERULMHCKKW4") shouldBe false
   }
 }
