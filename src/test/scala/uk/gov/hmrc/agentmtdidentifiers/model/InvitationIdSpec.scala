@@ -26,6 +26,10 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     invWithoutPrefix('C').value.takeRight(2) shouldBe checksumDigits("CBERULMHCKK")
   }
 
+  it should "create a valid identifier" in {
+    InvitationId.isValid(invWithoutPrefix('A').value) shouldBe true
+  }
+
   it should "give a different identifier whenever any of the arguments change" in {
     val agency = "agency"
     val clientId = "clientId"
