@@ -1,11 +1,14 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
+import java.nio.charset.{Charset, StandardCharsets}
+
 import org.joda.time.DateTime
 import org.scalatest.{FlatSpec, Matchers}
 import uk.gov.hmrc.agentmtdidentifiers.model.InvitationId._
 
 class InvitationIdSpec extends FlatSpec with Matchers {
-  val invWithoutPrefix = InvitationId.create(Arn("myAgency"), MtdItId("clientId"), "service", DateTime.parse("2001-01-01")) _
+  val invWithoutPrefix = (prefix: Char) =>
+    InvitationId.create(Arn("myAgency"), MtdItId("clientId"), "service", DateTime.parse("2001-01-01"))(prefix)
 
   "create" should "add prefix to start of identifier" in {
     invWithoutPrefix('A').value.head shouldBe 'A'
@@ -13,14 +16,14 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     invWithoutPrefix('C').value.head shouldBe 'C'
   }
 
-  it should "create an identifier 10 characters long" in {
-    invWithoutPrefix('A').value.length shouldBe 10
+  it should "create an identifier 19 characters long" in {
+    invWithoutPrefix('A').value.length shouldBe 19
   }
 
-  it should "append a CRC-5 alphanumeric checksum character" in {
-    invWithoutPrefix('A').value.last shouldBe to5BitAlphaNumeric(CRC5.calculate("ABERULMHC"))
-    invWithoutPrefix('B').value.last shouldBe to5BitAlphaNumeric(CRC5.calculate("BBERULMHC"))
-    invWithoutPrefix('C').value.last shouldBe to5BitAlphaNumeric(CRC5.calculate("CBERULMHC"))
+  it should "append two alphanumeric checksum characters using CRC-10" in {
+    invWithoutPrefix('A').value.takeRight(2) shouldBe checksumDigits("ABERULMHCKKZCE5RF")
+    invWithoutPrefix('B').value.takeRight(2) shouldBe checksumDigits("BBERULMHCKKZCE5RF")
+    invWithoutPrefix('C').value.takeRight(2) shouldBe checksumDigits("CBERULMHCKKZCE5RF")
   }
 
   it should "give a different identifier whenever any of the arguments change" in {
@@ -28,13 +31,13 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     val clientId = "clientId"
     val service = "service"
     val time = DateTime.parse("2001-01-01")
-    val prefix = 'A'
+    implicit val prefix = 'A'
 
-    val invA = InvitationId.create(Arn(agency), MtdItId(clientId), service, time)(prefix).value
-    val invB = InvitationId.create(Arn("different"), MtdItId(clientId), service, time)(prefix).value
-    val invC = InvitationId.create(Arn(agency), MtdItId("different"), service, time)(prefix).value
-    val invD = InvitationId.create(Arn(agency), MtdItId(clientId), "different", time)(prefix).value
-    val invE = InvitationId.create(Arn(agency), MtdItId(clientId), service, DateTime.parse("1999-01-01"))(prefix).value
+    val invA = InvitationId.create(Arn(agency), MtdItId(clientId), service, time).value
+    val invB = InvitationId.create(Arn("different"), MtdItId(clientId), service, time).value
+    val invC = InvitationId.create(Arn(agency), MtdItId("different"), service, time).value
+    val invD = InvitationId.create(Arn(agency), MtdItId(clientId), "different", time).value
+    val invE = InvitationId.create(Arn(agency), MtdItId(clientId), service, DateTime.parse("1999-01-01")).value
     val invF = InvitationId.create(Arn(agency), MtdItId(clientId), service, DateTime.parse("1999-01-01"))('Z').value
 
     Set(invA, invB, invC, invD, invE, invF).size shouldBe 6
@@ -81,13 +84,12 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     }
   }
 
-  "bytesTo5BitNums" should "return 8 5-bit numbers from of the bytes' bits" in {
+  "bytesTo5BitNums" should "return 16 5-bit numbers from of the bytes' bits" in {
     val ff = 0xFF.toByte
-    bytesTo5BitNums(Seq(0, 0, 0, 0, 0)) shouldBe Seq(0, 0, 0, 0, 0, 0, 0, 0)
-    bytesTo5BitNums(Seq(1, 0, 0, 0, 0)) shouldBe Seq(1, 0, 0, 0, 0, 0, 0, 0)
-    bytesTo5BitNums(Seq(0x0FF.toByte, 0, 0, 0, 0)) shouldBe Seq(31, 7, 0, 0, 0, 0, 0, 0)
-    bytesTo5BitNums(Seq(31, 0, 0, 0, 0)) shouldBe Seq(31, 0, 0, 0, 0, 0, 0, 0)
-    bytesTo5BitNums(Seq(ff, ff, ff, ff, ff)) shouldBe Seq(31, 31, 31, 31, 31, 31, 31, 31)
+    bytesTo5BitNums(Seq(0,0,0,0,0,0,0,0,0,0)) shouldBe Seq(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+    bytesTo5BitNums(Seq(1,0,0,0,0,0,0,0,0,0)) shouldBe Seq(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+    bytesTo5BitNums(Seq(0x0FF.toByte,0,0,0,0,0,0,0,0,0)) shouldBe Seq(31,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+    bytesTo5BitNums(Seq(ff,ff,ff,ff,ff,ff,ff,ff,ff,ff)) shouldBe Seq(31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31)
   }
 
   it should "throw IllegalArgumentException if the passed sequence does not contain a multiple of 5 bytes" in {
@@ -119,5 +121,33 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     an[IllegalArgumentException] shouldBe thrownBy {
       to5BitAlphaNumeric(-1)
     }
+  }
+
+  "CRC10" should "be deterministic" in {
+    CRC10.calculate(Array[Byte](1, 2)) shouldBe CRC10.calculate(Array[Byte](1, 2))
+  }
+
+  it should "not (usually) give same checksum for different input" in {
+    CRC10.calculate(Array[Byte](1, 2)) should not be CRC10.calculate(Array[Byte](2, 1))
+    CRC10.calculate(Array[Byte](1, 2, 3)) should not be CRC10.calculate(Array[Byte](1, 3, 2))
+    CRC10.calculate(Array[Byte](1, 2, 3)) should not be CRC10.calculate(Array[Byte](3, 2, 3))
+    CRC10.calculate(Array[Byte](1, 2, 3)) should not be CRC10.calculate(Array[Byte](3, 2, 1))
+    CRC10.calculate(Array[Byte](1, 2, 3)) should not be CRC10.calculate(Array[Byte](3, 1, 2))
+  }
+
+  it should "provide checksum for many bytes" in {
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) shouldBe CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8))
+  }
+
+  it should "produce a checksum that captures minor errors in large input" in {
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 7))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](0, 2, 3, 4, 5, 6, 7, 8))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](1, 2, 3, 3, 5, 6, 7, 8))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 0, 7, 8))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](0, 0, 0, 4, 5, 0, 7, 8))
+  }
+
+  it should "produce checksums from either a String's bytes or bytes directly" in {
+    CRC10.calculate("ABC") shouldBe CRC10.calculate("ABC".getBytes(StandardCharsets.UTF_8))
   }
 }

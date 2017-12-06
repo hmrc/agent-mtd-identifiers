@@ -3,11 +3,11 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 import java.security.MessageDigest
 
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.libs.json.{Format, __}
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{Format, __}
 
 case class InvitationId(value: String) {
-  require(value.size == 10, "The size of invitation id should not exceed 10")
+  require(value.size == 19, "The size of invitation id should not exceed 19")
 }
 
 object InvitationId {
@@ -21,6 +21,26 @@ object InvitationId {
     .map(x => InvitationId(x))
 
   implicit val idFormats = Format(idReads, idWrites)
+
+  def create(arn: Arn,
+             clientId: MtdItId,
+             serviceName: String,
+             timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(implicit prefix: Char): InvitationId = {
+    val idUnhashed = s"${arn.value}.${clientId.value},$serviceName-${timestamp.getMillis}"
+    val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(10)
+    val idChars = bytesTo5BitNums(idBytes).map(to5BitAlphaNumeric).mkString
+    val idWithPrefix = s"$prefix$idChars"
+
+    InvitationId(s"$idWithPrefix${checksumDigits(idWithPrefix)}")
+  }
+
+  private[model] def checksumDigits(toChecksum: String) = {
+    val checksum10Bits = CRC10.calculate(toChecksum)
+    val lsb5BitsChecksum = to5BitAlphaNumeric( checksum10Bits & 0x1F )
+    val msb5BitsChecksum = to5BitAlphaNumeric( (checksum10Bits & 0x3E0) >> 5 )
+
+    s"$lsb5BitsChecksum$msb5BitsChecksum"
+  }
 
   private[model] def byteToBitsLittleEndian(byte: Byte): Seq[Boolean] = {
     def isBitOn(bitPos: Int): Boolean = {
@@ -42,7 +62,7 @@ object InvitationId {
   }
 
   private[model] def bytesTo5BitNums(bytes: Seq[Byte]): Seq[Int] = {
-    require(bytes.size % 5 == 0)
+    require(bytes.size % 10 == 0)
     require(bytes.nonEmpty)
 
     bytes.flatMap(byteToBitsLittleEndian).grouped(5).map(to5BitNum).toSeq
@@ -53,50 +73,40 @@ object InvitationId {
 
     "ABCDEFGHJKLMNOPRSTUWXYZ123456789"(fiveBitNum)
   }
-
-  def create(arn: Arn,
-             clientId: MtdItId,
-             serviceName: String,
-             timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(prefix: Char): InvitationId = {
-    val idUnhashed = s"${arn.value}.${clientId.value},$serviceName-${timestamp.getMillis}"
-    val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(5)
-    val idChars = bytesTo5BitNums(idBytes).map(to5BitAlphaNumeric).mkString
-    val idWithPrefix = s"$prefix$idChars"
-    val checkDigit = to5BitAlphaNumeric(CRC5.calculate(idWithPrefix))
-
-    InvitationId(s"$idWithPrefix$checkDigit")
-  }
 }
 
-private[model] object CRC5 {
+private[model] object CRC10 {
 
-  /* Params for CRC-5/EPC */
-  val bitWidth = 5
-  val poly = 0x09
-  val initial = 0x09
+  /* Params for CRC-10 */
+  val bitWidth = 10
+  val poly = 0x233
+  val initial = 0
   val xorOut = 0
+  val widthMask = (1 << bitWidth) - 1
 
   val table: Seq[Int] = {
-    val widthMask = (1 << bitWidth) - 1
-    val shpoly = poly << (8 - bitWidth)
+
+    val top = 1 << (bitWidth - 1)
+
     for (i <- 0 until 256) yield {
-      var crc = i
+      var crc = i << (bitWidth - 8)
       for (_ <- 0 until 8) {
-        crc = if ((crc & 0x80) != 0) (crc << 1) ^ shpoly else crc << 1
+        crc = if ((crc & top) != 0) (crc << 1) ^ poly else crc << 1
       }
-      (crc >> (8 - bitWidth)) & widthMask
+
+      crc & widthMask
     }
   }
 
   def calculate(string: String): Int = calculate(string.getBytes())
 
   def calculate(input: Array[Byte]): Int = {
-    val start = 0
     val length = input.length
     var crc = initial ^ xorOut
+
     for (i <- 0 until length) {
-      crc = table((crc << (8 - bitWidth)) ^ (input(start + i) & 0xff)) & 0xff
+      crc = table(((crc >>> (bitWidth - 8)) ^ input(i)) & 0xff) ^ (crc << 8)
     }
-    crc ^ xorOut
+    crc & widthMask
   }
 }
