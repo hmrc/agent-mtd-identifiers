@@ -7,11 +7,10 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, __}
 
 case class InvitationId(value: String) {
-  require(value.size == 19, "The size of invitation id should not exceed 19")
+  require(value.size == 13, "The size of invitation id should not exceed 13")
 }
 
 object InvitationId {
-
   private def idWrites = (__ \ "value")
     .write[String]
     .contramap((id: InvitationId) => id.value.toString)
@@ -22,12 +21,19 @@ object InvitationId {
 
   implicit val idFormats = Format(idReads, idWrites)
 
+  private val pattern = "^[ABCDEFGHJKLMNOPRSTUWXYZ123456789]{13}$".r
+
+  def isValid(identifier: String): Boolean = identifier match {
+    case pattern(_*) => checksumDigits(identifier.take(11)) == identifier.takeRight(2)
+    case _ => false
+  }
+
   def create(arn: Arn,
              clientId: MtdItId,
              serviceName: String,
              timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(implicit prefix: Char): InvitationId = {
     val idUnhashed = s"${arn.value}.${clientId.value},$serviceName-${timestamp.getMillis}"
-    val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(10)
+    val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(7)
     val idChars = bytesTo5BitNums(idBytes).map(to5BitAlphaNumeric).mkString
     val idWithPrefix = s"$prefix$idChars"
 
@@ -62,10 +68,14 @@ object InvitationId {
   }
 
   private[model] def bytesTo5BitNums(bytes: Seq[Byte]): Seq[Int] = {
-    require(bytes.size % 10 == 0)
     require(bytes.nonEmpty)
 
-    bytes.flatMap(byteToBitsLittleEndian).grouped(5).map(to5BitNum).toSeq
+    bytes
+      .flatMap(byteToBitsLittleEndian)
+      .grouped(5) // Group into chunks of 5 bits
+      .collect { case x if x.size == 5 => to5BitNum(x) }
+      .take(10) // Take only 10 5-bit numbers
+      .toSeq
   }
 
   private[model] def to5BitAlphaNumeric(fiveBitNum: Int) = {
