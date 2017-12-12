@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import java.nio.charset.StandardCharsets
@@ -8,7 +24,7 @@ import uk.gov.hmrc.agentmtdidentifiers.model.InvitationId._
 
 class InvitationIdSpec extends FlatSpec with Matchers {
   val invWithoutPrefix = (prefix: Char) =>
-    InvitationId.create(Arn("myAgency"), MtdItId("clientId"), "service", DateTime.parse("2001-01-01"))(prefix)
+    InvitationId.create("myAgency", "clientId", "service", DateTime.parse("2001-01-01"))(prefix)
 
   "create" should "add prefix to start of identifier" in {
     invWithoutPrefix('A').value.head shouldBe 'A'
@@ -37,12 +53,12 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     val time = DateTime.parse("2001-01-01")
     implicit val prefix = 'A'
 
-    val invA = InvitationId.create(Arn(agency), MtdItId(clientId), service, time).value
-    val invB = InvitationId.create(Arn("different"), MtdItId(clientId), service, time).value
-    val invC = InvitationId.create(Arn(agency), MtdItId("different"), service, time).value
-    val invD = InvitationId.create(Arn(agency), MtdItId(clientId), "different", time).value
-    val invE = InvitationId.create(Arn(agency), MtdItId(clientId), service, DateTime.parse("1999-01-01")).value
-    val invF = InvitationId.create(Arn(agency), MtdItId(clientId), service, DateTime.parse("1999-01-01"))('Z').value
+    val invA = InvitationId.create(agency, clientId, service, time).value
+    val invB = InvitationId.create("different", clientId, service, time).value
+    val invC = InvitationId.create(agency, "different", service, time).value
+    val invD = InvitationId.create(agency, clientId, "different", time).value
+    val invE = InvitationId.create(agency, clientId, service, DateTime.parse("1999-01-01")).value
+    val invF = InvitationId.create(agency, clientId, service, DateTime.parse("1999-01-01"))('Z').value
 
     Set(invA, invB, invC, invD, invE, invF).size shouldBe 6
   }
