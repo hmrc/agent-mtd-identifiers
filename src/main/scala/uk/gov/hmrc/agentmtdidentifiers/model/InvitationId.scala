@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import java.security.MessageDigest
@@ -29,8 +45,14 @@ object InvitationId {
   def create(arn: Arn,
              clientId: MtdItId,
              serviceName: String,
+             timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(implicit prefix: Char): InvitationId =
+    createId(arn, clientId.value, serviceName, timestamp)
+
+  def createId(arn: Arn,
+             clientId: String,
+             serviceName: String,
              timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(implicit prefix: Char): InvitationId = {
-    val idUnhashed = s"${arn.value}.${clientId.value},$serviceName-${timestamp.getMillis}"
+    val idUnhashed = s"${arn.value}.$clientId,$serviceName-${timestamp.getMillis}"
     val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(7)
     val idChars = bytesTo5BitNums(idBytes).map(to5BitAlphaNumeric).mkString
     val idWithPrefix = s"$prefix$idChars"
