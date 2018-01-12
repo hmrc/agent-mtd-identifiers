@@ -38,8 +38,9 @@ object VrnValidation {
   def isValid(vrn: String): Boolean = {
     if(regexCheck(vrn)){
       val total = weightedTotal(vrn)
-      if (takeCheckSumPart(vrn) == calcCheckSum97(total)) true
-      else takeCheckSumPart(vrn) == calcCheckSum9755(total)
+      val checkSumPart = takeCheckSumPart(vrn)
+      if (checkSumPart == calcCheckSum97(total)) true
+      else checkSumPart == calcCheckSum9755(total)
     } else false
   }
 }
