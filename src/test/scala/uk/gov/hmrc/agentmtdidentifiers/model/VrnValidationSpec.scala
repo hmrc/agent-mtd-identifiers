@@ -67,4 +67,17 @@ class VrnValidationSpec extends FlatSpec with Matchers {
     VrnValidation.weightedTotal("111111100") shouldBe 8 + 7 + 6 + 5 + 4 + 3 + 2
     VrnValidation.weightedTotal("777777700") shouldBe 56 + 49+ 42 + 35 + 28 + 21 + 14
   }
+
+  "regexCheck" should "return true if the vrn matches regex" in {
+    VrnValidation.regexCheck(reference97) shouldBe true
+    VrnValidation.regexCheck(reference9755) shouldBe true
+  }
+
+  "regexCheck" should "return false if the vrn does not match regex" in {
+    VrnValidation.regexCheck(reference97+"1") shouldBe false
+    VrnValidation.regexCheck(reference9755+"1") shouldBe false
+    VrnValidation.regexCheck("7777777") shouldBe false
+    VrnValidation.regexCheck("7777777AA") shouldBe false
+    VrnValidation.regexCheck("AAAAAAAAA") shouldBe false
+  }
 }
