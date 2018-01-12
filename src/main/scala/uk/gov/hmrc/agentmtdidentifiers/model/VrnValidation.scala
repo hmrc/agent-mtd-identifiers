@@ -39,8 +39,7 @@ object VrnValidation {
     if(regexCheck(vrn)){
       val total = weightedTotal(vrn)
       if (takeCheckSumPart(vrn) == calcCheckSum97(total)) true
-      else if (takeCheckSumPart(vrn) == calcCheckSum9755(total)) true
-      else false
+      else takeCheckSumPart(vrn) == calcCheckSum9755(total)
     } else false
   }
 }
