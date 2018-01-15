@@ -16,7 +16,13 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-object VrnValidation {
+import uk.gov.hmrc.domain.{SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
+
+case class Vrn(value: String) extends TaxIdentifier
+
+object Vrn {
+  implicit val vrnReads = new SimpleObjectReads[Vrn]("value", Vrn.apply)
+  implicit val vrnWrites = new SimpleObjectWrites[Vrn](_.value)
 
   private[model]def calcCheckSum97(total: Int): Int = {
     val mod = total % 97
