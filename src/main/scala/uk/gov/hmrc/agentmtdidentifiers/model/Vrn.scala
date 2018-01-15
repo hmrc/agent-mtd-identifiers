@@ -21,8 +21,8 @@ import uk.gov.hmrc.domain.{SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 case class Vrn(value: String) extends TaxIdentifier
 
 object Vrn {
-  implicit val arnReads = new SimpleObjectReads[Arn]("value", Arn.apply)
-  implicit val arnWrites = new SimpleObjectWrites[Arn](_.value)
+  implicit val vrnReads = new SimpleObjectReads[Vrn]("value", Vrn.apply)
+  implicit val vrnWrites = new SimpleObjectWrites[Vrn](_.value)
 
   private[model]def calcCheckSum97(total: Int): Int = {
     val mod = total % 97
