@@ -28,7 +28,6 @@ Arn.isValid("TABC0000001") // false
 ```
 
 ```
-
 ### Installing
 
 Add the following to your SBT build:
