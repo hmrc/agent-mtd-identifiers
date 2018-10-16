@@ -1,12 +1,16 @@
 import sbt.Keys._
 import sbt._
 import play.core.PlayVersion
-import uk.gov.hmrc.DefaultBuildSettings.scalaSettings
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object HmrcBuild extends Build {
 
   import uk.gov.hmrc._
+  import uk.gov.hmrc.SbtAutoBuildPlugin
+  import uk.gov.hmrc.SbtArtifactory
+  import uk.gov.hmrc.versioning.SbtGitVersioning
+  import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+  import uk.gov.hmrc.SbtArtifactory.autoImport.makePublicallyAvailableOnBintray
+
 
   val appName = "agent-mtd-identifiers"
 
@@ -23,7 +27,8 @@ object HmrcBuild extends Build {
   }
 
   lazy val microservice = Project(appName, file("."))
-    .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
+    .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
+    .settings(majorVersion := 0)
     .settings(scoverageSettings: _*)
     .settings(
       scalaVersion := "2.11.8",
@@ -33,7 +38,7 @@ object HmrcBuild extends Build {
         Resolver.bintrayRepo("hmrc", "releases"),
         "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
       )
-    )
+    ).settings(makePublicallyAvailableOnBintray := true)
 }
 
 private object AppDependencies {
