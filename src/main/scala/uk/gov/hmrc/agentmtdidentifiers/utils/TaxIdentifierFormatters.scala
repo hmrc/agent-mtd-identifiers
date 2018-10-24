@@ -41,7 +41,7 @@ object TaxIdentifierFormatters {
 
     def prettifyStrict: Option[String] = {
       Utr.isValid(utr.value) match {
-        case true if utr.value.trim.length == 10 => {
+        case true => {
           val (first, last) = utr.value.trim.splitAt(5)
           Some(s"$first $last")
         }
