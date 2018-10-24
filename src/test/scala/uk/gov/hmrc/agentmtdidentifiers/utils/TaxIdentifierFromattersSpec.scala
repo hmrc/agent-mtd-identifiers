@@ -43,8 +43,12 @@ class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
     Utr("2000000000").prettifyStrict shouldBe Some("20000 00000")
   }
 
-  "Utr.prettifyStrict" should "return None whenever Utr.length NOT EQUAL to 10" in {
-    Utr("20000000001").prettifyStrict shouldBe None
+  "Utr.prettifyStrict" should "return None whenever INVALID or Utr.length NOT EQUAL to 10" in {
+    Utr("200000").prettifyStrict shouldBe None
+  }
+
+  "Utr.prettifyStrict" should "return None whenever INVALID" in {
+    Utr("200000000B").prettifyStrict shouldBe None
   }
 
   "Utr.prettify" should "return utr with space in middle as Utr length is always 10" in {
