@@ -32,22 +32,17 @@ object TaxIdentifierFormatters {
       else None
     }
 
-    def prettify: String = {
-      prettifyStrict.getOrElse(arn.value)
-    }
+    def prettify: String = prettifyStrict.getOrElse(arn.value)
   }
 
   implicit class UtrOps(utr: Utr) {
 
-    def prettifyStrict: Option[String] = {
+    def prettifyStrict: Option[String] =
       if(Utr.isValid(utr.value)){
           val (first, last) = utr.value.trim.splitAt(5)
           Some(s"$first $last")
       } else None
-    }
 
-    def prettify: String = {
-      prettifyStrict.getOrElse(utr.value)
-    }
+    def prettify: String = prettifyStrict.getOrElse(utr.value)
   }
 }
