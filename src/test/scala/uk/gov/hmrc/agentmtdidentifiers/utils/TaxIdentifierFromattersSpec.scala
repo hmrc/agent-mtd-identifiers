@@ -55,7 +55,7 @@ class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
     Utr("2000000000").prettify shouldBe "20000 00000"
   }
 
-  "Utr.prettify" should "return original value if Utr.length NOT EQUAL to 10 " in {
+  "Utr.prettify" should "return original value if INVALID or Utr.length NOT EQUAL to 10 " in {
     Utr("20000000001").prettify shouldBe "20000000001"
   }
 }
