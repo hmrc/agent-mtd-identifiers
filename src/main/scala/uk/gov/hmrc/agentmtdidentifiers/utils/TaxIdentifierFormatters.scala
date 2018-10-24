@@ -50,5 +50,4 @@ object TaxIdentifierFormatters {
       prettifyStrict.getOrElse(utr.value)
     }
   }
-
 }
