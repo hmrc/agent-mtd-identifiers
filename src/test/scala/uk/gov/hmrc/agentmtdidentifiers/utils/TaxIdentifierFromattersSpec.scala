@@ -39,12 +39,12 @@ class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
     Arn("TARN00aaa00001").prettify shouldBe "TARN00aaa00001"
   }
 
-  "Utr.prettifyStrict" should "return Some(utr with space in middle) as Utr length is always length 10" in {
+  "Utr.prettifyStrict" should "return Some(utr with space in middle) when VALID UTR" in {
     Utr("2000000000").prettifyStrict shouldBe Some("20000 00000")
   }
 
-  "Utr.prettifyStrict" should "return None whenever INVALID or Utr.length NOT EQUAL to 10" in {
-    Utr("200000").prettifyStrict shouldBe None
+  "Utr.prettifyStrict" should "return None whenever INVALID" in {
+    Utr("200").prettifyStrict shouldBe None
   }
 
   "Utr.prettifyStrict" should "return None whenever INVALID" in {
@@ -55,7 +55,7 @@ class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
     Utr("2000000000").prettify shouldBe "20000 00000"
   }
 
-  "Utr.prettify" should "return original value if INVALID or Utr.length NOT EQUAL to 10 " in {
+  "Utr.prettify" should "return original value if INVALID" in {
     Utr("20000000001").prettify shouldBe "20000000001"
   }
 }
