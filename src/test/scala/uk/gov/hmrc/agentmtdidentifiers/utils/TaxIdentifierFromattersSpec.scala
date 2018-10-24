@@ -27,7 +27,7 @@ class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
     Arn("TARN0000001").prettify shouldBe "TARN-000-0001"
   }
 
-  "Arn.prettify" should "return original value ARN is NOT VALID" in {
+  "Arn.prettify" should "return original value if ARN is NOT VALID" in {
     Arn("TARN00aaa00001").prettify shouldBe "TARN00aaa00001"
   }
 
