@@ -40,13 +40,10 @@ object TaxIdentifierFormatters {
   implicit class UtrOps(utr: Utr) {
 
     def prettifyStrict: Option[String] = {
-      Utr.isValid(utr.value) match {
-        case true => {
+      if(Utr.isValid(utr.value)){
           val (first, last) = utr.value.trim.splitAt(5)
           Some(s"$first $last")
-        }
-        case _ => None
-      }
+      } else None
     }
 
     def prettify: String = {
