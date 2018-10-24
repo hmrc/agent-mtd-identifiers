@@ -17,11 +17,19 @@
 package uk.gov.hmrc.agentmtdidentifiers.utils
 
 import org.scalatest.{FlatSpec, Matchers}
-import uk.gov.hmrc.agentmtdidentifiers.model.Arn
+import uk.gov.hmrc.agentmtdidentifiers.model.{Arn, Utr}
 
-import uk.gov.hmrc.agentmtdidentifiers.utils.TaxIdentifierFormatters.ArnOps
+import uk.gov.hmrc.agentmtdidentifiers.utils.TaxIdentifierFormatters.{ArnOps, UtrOps}
 
 class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
+
+  "Arn.prettifyStrict" should "return Some(hyphenated arn) if arn IS VALID" in {
+    Arn("TARN0000001").prettifyStrict shouldBe Some("TARN-000-0001")
+  }
+
+  "Arn.prettifyStrict" should "return None if arn is NOT VALID" in {
+    Arn("TARN00aaa00001").prettifyStrict shouldBe None
+  }
 
   "Arn.prettify" should "return hyphenated arn if arn IS VALID" in {
     Arn("TARN0000001").prettify shouldBe "TARN-000-0001"
@@ -31,11 +39,19 @@ class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
     Arn("TARN00aaa00001").prettify shouldBe "TARN00aaa00001"
   }
 
-  "Arn.prettifyStrict" should "return Some(hyphenated arn) if arn IS VALID" in {
-    Arn("TARN0000001").prettifyStrict shouldBe Some("TARN-000-0001")
+  "Utr.prettifyStrict" should "return Some(utr with space in middle) as Utr length is always length 10" in {
+    Utr("2000000000").prettifyStrict shouldBe Some("20000 00000")
   }
 
-  "Arn.prettifyStrict" should "return None if arn is NOT VALID" in {
-    Arn("TARN00aaa00001").prettifyStrict shouldBe None
+  "Utr.prettifyStrict" should "return None whenever Utr.length NOT EQUAL to 10" in {
+    Utr("20000000001").prettifyStrict shouldBe None
+  }
+
+  "Utr.prettify" should "return utr with space in middle as Utr length is always 10" in {
+    Utr("2000000000").prettify shouldBe "20000 00000"
+  }
+
+  "Utr.prettify" should "return original value if Utr.length NOT EQUAL to 10 " in {
+    Utr("20000000001").prettify shouldBe "20000000001"
   }
 }

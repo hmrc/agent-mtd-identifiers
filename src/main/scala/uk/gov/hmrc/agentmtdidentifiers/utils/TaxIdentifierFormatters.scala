@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.utils
 
-import uk.gov.hmrc.agentmtdidentifiers.model.Arn
+import uk.gov.hmrc.agentmtdidentifiers.model.{Arn, Utr}
 
 object TaxIdentifierFormatters {
 
@@ -34,6 +34,21 @@ object TaxIdentifierFormatters {
 
     def prettify: String = {
       prettifyStrict.getOrElse(arn.value)
+    }
+  }
+
+  implicit class UtrOps(utr: Utr) {
+
+    def prettifyStrict: Option[String] = {
+      if (utr.value.trim.length == 10) {
+        val (first, last) = utr.value.trim.splitAt(5)
+        Some(s"$first $last")
+      }
+      else None
+    }
+
+    def prettify: String = {
+      prettifyStrict.getOrElse(utr.value)
     }
   }
 }
