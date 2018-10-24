@@ -20,7 +20,7 @@ import uk.gov.hmrc.agentmtdidentifiers.model.Arn
 
 object TaxIdentifierFormatters {
 
-  implicit class ArnPrettifyOps(arn: Arn) {
+  implicit class ArnOps(arn: Arn) {
 
     def prettifyStrict: Option[String] = {
       if (Arn.isValid(arn.value)) {
