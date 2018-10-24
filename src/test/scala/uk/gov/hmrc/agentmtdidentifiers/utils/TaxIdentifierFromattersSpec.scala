@@ -19,7 +19,7 @@ package uk.gov.hmrc.agentmtdidentifiers.utils
 import org.scalatest.{FlatSpec, Matchers}
 import uk.gov.hmrc.agentmtdidentifiers.model.Arn
 
-import uk.gov.hmrc.agentmtdidentifiers.utils.TaxIdentifierFormatters.ArnPrettifyOps
+import uk.gov.hmrc.agentmtdidentifiers.utils.TaxIdentifierFormatters.ArnOps
 
 class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
 
