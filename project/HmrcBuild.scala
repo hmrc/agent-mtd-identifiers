@@ -1,15 +1,17 @@
 import sbt.Keys._
 import sbt._
-import play.core.PlayVersion
+
+import uk.gov.hmrc.playcrosscompilation.AbstractPlayCrossCompilation
+import uk.gov.hmrc.playcrosscompilation.PlayVersion.Play25
+
+object PlayCrossCompilation extends AbstractPlayCrossCompilation(defaultPlayVersion = Play25)
 
 object HmrcBuild extends Build {
 
-  import uk.gov.hmrc._
-  import uk.gov.hmrc.SbtAutoBuildPlugin
-  import uk.gov.hmrc.SbtArtifactory
+  import uk.gov.hmrc.SbtArtifactory.autoImport.makePublicallyAvailableOnBintray
+  import uk.gov.hmrc.{SbtArtifactory, SbtAutoBuildPlugin}
   import uk.gov.hmrc.versioning.SbtGitVersioning
   import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-  import uk.gov.hmrc.SbtArtifactory.autoImport.makePublicallyAvailableOnBintray
 
 
   val appName = "agent-mtd-identifiers"
@@ -32,35 +34,26 @@ object HmrcBuild extends Build {
     .settings(scoverageSettings: _*)
     .settings(
       scalaVersion := "2.11.8",
-      libraryDependencies ++= AppDependencies(),
-      crossScalaVersions := Seq("2.11.8"),
+      libraryDependencies ++= PlayCrossCompilation.dependencies(
+        shared = Seq(
+          "org.scalatest"     %% "scalatest"  % "3.0.6"  % Test,
+          "org.pegdown"       %  "pegdown"    % "1.6.0"  % Test,
+          "org.scalacheck"    %% "scalacheck" % "1.14.0" % Test
+        ),
+        play25 = Seq(
+          "com.typesafe.play" %% "play-json"  % "2.5.19",
+          "uk.gov.hmrc" %% "domain" % "5.4.0-play-25"
+        ),
+        play26 = Seq(
+          "com.typesafe.play" %% "play-json"  % "2.6.13",
+          "uk.gov.hmrc" %% "domain" % "5.4.0-play-26"
+        )
+      ),
+      crossScalaVersions := List("2.11.12", "2.12.8"),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
         "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
       )
     ).settings(makePublicallyAvailableOnBintray := true)
-}
-
-private object AppDependencies {
-
-  val compile = Seq(
-    "com.typesafe.play" %% "play-json" % PlayVersion.current,
-    "uk.gov.hmrc" %% "domain" % "5.1.0"
-  )
-
-  trait TestDependencies {
-    lazy val scope: String = "test"
-    lazy val test: Seq[ModuleID] = ???
-  }
-
-  object Test {
-    def apply() = new TestDependencies {
-      override lazy val test = Seq(
-        "org.scalatest" %% "scalatest" % "3.0.1" % scope,
-        "org.pegdown" % "pegdown" % "1.5.0" % scope
-      )
-    }.test
-  }
-
-  def apply() = compile ++ Test()
+    .settings(PlayCrossCompilation.playCrossCompilationSettings)
 }

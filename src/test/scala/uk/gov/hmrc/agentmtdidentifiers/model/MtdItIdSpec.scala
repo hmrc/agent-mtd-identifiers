@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,18 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.prop.PropertyChecks
+import org.scalacheck._
 
-class MtdItIdSpec extends FlatSpec with Matchers {
+class MtdItIdSpec extends FlatSpec with Matchers with PropertyChecks {
+
+  val permittedChars = Gen.oneOf("abcdefghijklmnoqprstuvwxyzABCDEFGHIJKLMNOQPRSTUVWXYZ0123456789")
+  val validMtdItId = Gen.listOfN(15, permittedChars).map(_.toArray).map(new String(_))
 
   it should "be true for a valid MTDITID" in {
-    MtdItId.isValid("A0000000000000a") shouldBe true
+    forAll(validMtdItId) { mtditid =>
+      MtdItId.isValid(mtditid) shouldBe true
+    }
   }
 
   it should "be false when it has more than 15 digits" in {

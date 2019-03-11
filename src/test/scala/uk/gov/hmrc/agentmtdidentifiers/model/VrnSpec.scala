@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.{FlatSpec, Matchers}
-
 
 class VrnSpec extends FlatSpec with Matchers {
 
@@ -65,7 +64,7 @@ class VrnSpec extends FlatSpec with Matchers {
     Vrn.weightedTotal(reference97) shouldBe 98
     Vrn.weightedTotal(reference9755) shouldBe 98
     Vrn.weightedTotal("111111100") shouldBe 8 + 7 + 6 + 5 + 4 + 3 + 2
-    Vrn.weightedTotal("777777700") shouldBe 56 + 49+ 42 + 35 + 28 + 21 + 14
+    Vrn.weightedTotal("777777700") shouldBe 56 + 49 + 42 + 35 + 28 + 21 + 14
   }
 
   "regexCheck" should "return true if the vrn matches regex" in {
@@ -74,8 +73,8 @@ class VrnSpec extends FlatSpec with Matchers {
   }
 
   "regexCheck" should "return false if the vrn does not match regex" in {
-    Vrn.regexCheck(reference97+"1") shouldBe false
-    Vrn.regexCheck(reference9755+"1") shouldBe false
+    Vrn.regexCheck(reference97 + "1") shouldBe false
+    Vrn.regexCheck(reference9755 + "1") shouldBe false
     Vrn.regexCheck("7777777") shouldBe false
     Vrn.regexCheck("7777777AA") shouldBe false
     Vrn.regexCheck("AAAAAAAAA") shouldBe false

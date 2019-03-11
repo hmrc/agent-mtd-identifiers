@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,15 @@ import play.api.libs.json.{Format, __}
 case class InvitationId(value: String)
 
 object InvitationId {
-  private def idWrites = (__ \ "value")
-    .write[String]
-    .contramap((id: InvitationId) => id.value.toString)
+  private def idWrites =
+    (__ \ "value")
+      .write[String]
+      .contramap((id: InvitationId) => id.value.toString)
 
-  private def idReads = (__ \ "value")
-    .read[String]
-    .map(x => InvitationId(x))
+  private def idReads =
+    (__ \ "value")
+      .read[String]
+      .map(x => InvitationId(x))
 
   implicit val idFormats = Format(idReads, idWrites)
 
@@ -39,14 +41,12 @@ object InvitationId {
 
   def isValid(identifier: String): Boolean = identifier match {
     case pattern(_*) => checksumDigits(identifier.take(11)) == identifier.takeRight(2)
-    case _ => false
+    case _           => false
   }
 
-  def create(arn: String,
-             clientId: String,
-             serviceName: String,
-             timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(implicit prefix: Char): InvitationId = {
-    val idUnhashed = s"${arn}.${clientId},$serviceName-${timestamp.getMillis}"
+  def create(arn: String, clientId: String, serviceName: String, timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(
+    implicit prefix: Char): InvitationId = {
+    val idUnhashed = s"$arn.$clientId,$serviceName-${timestamp.getMillis}"
     val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(7)
     val idChars = bytesTo5BitNums(idBytes).map(to5BitAlphaNumeric).mkString
     val idWithPrefix = s"$prefix$idChars"
@@ -54,10 +54,10 @@ object InvitationId {
     InvitationId(s"$idWithPrefix${checksumDigits(idWithPrefix)}")
   }
 
-    private[model] def checksumDigits(toChecksum: String) = {
+  private[model] def checksumDigits(toChecksum: String) = {
     val checksum10Bits = CRC10.calculate(toChecksum)
-    val lsb5BitsChecksum = to5BitAlphaNumeric( checksum10Bits & 0x1F )
-    val msb5BitsChecksum = to5BitAlphaNumeric( (checksum10Bits & 0x3E0) >> 5 )
+    val lsb5BitsChecksum = to5BitAlphaNumeric(checksum10Bits & 0x1F)
+    val msb5BitsChecksum = to5BitAlphaNumeric((checksum10Bits & 0x3E0) >> 5)
 
     s"$lsb5BitsChecksum$msb5BitsChecksum"
   }
@@ -77,7 +77,7 @@ object InvitationId {
     bitsLittleEndian
       .take(5)
       .zipWithIndex
-      .map{ case (bit, power) => if(bit) 1 << power else 0 }
+      .map { case (bit, power) => if (bit) 1 << power else 0 }
       .sum
   }
 
@@ -95,7 +95,7 @@ object InvitationId {
   private[model] def to5BitAlphaNumeric(fiveBitNum: Int) = {
     require(fiveBitNum >= 0 && fiveBitNum <= 31)
 
-    "ABCDEFGHJKLMNOPRSTUWXYZ123456789"(fiveBitNum)
+    "ABCDEFGHJKLMNOPRSTUWXYZ123456789" (fiveBitNum)
   }
 }
 

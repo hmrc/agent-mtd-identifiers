@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ object MtdItId {
   def isValid(mtdItId: String): Boolean =
     mtdItId match {
       case pattern(_*) => true
-      case _ => false
+      case _           => false
     }
 
   implicit val reads = new SimpleObjectReads[MtdItId]("value", MtdItId.apply)
