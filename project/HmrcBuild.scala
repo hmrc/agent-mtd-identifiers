@@ -33,7 +33,7 @@ object HmrcBuild extends Build {
     .settings(majorVersion := 0)
     .settings(scoverageSettings: _*)
     .settings(
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.12",
       libraryDependencies ++= PlayCrossCompilation.dependencies(
         shared = Seq(
           "org.scalatest"     %% "scalatest"  % "3.0.6"  % Test,
