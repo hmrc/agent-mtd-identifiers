@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,10 +106,10 @@ class InvitationIdSpec extends FlatSpec with Matchers {
 
   "bytesTo5BitNums" should "take 8 bytes and return 10 5-bit numbers from of the bytes' bits" in {
     val ff = 0xFF.toByte
-    bytesTo5BitNums(Seq(0,0,0,0,0,0,0,0)) shouldBe Seq(0,0,0,0,0,0,0,0,0,0)
-    bytesTo5BitNums(Seq(1,0,0,0,0,0,0,0)) shouldBe Seq(1,0,0,0,0,0,0,0,0,0)
-    bytesTo5BitNums(Seq(0x0FF.toByte,0,0,0,0,0,0,0)) shouldBe Seq(31,7,0,0,0,0,0,0,0,0)
-    bytesTo5BitNums(Seq(ff,ff,ff,ff,ff,ff,ff,ff)) shouldBe Seq(31,31,31,31,31,31,31,31,31,31)
+    bytesTo5BitNums(Seq(0, 0, 0, 0, 0, 0, 0, 0)) shouldBe Seq(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    bytesTo5BitNums(Seq(1, 0, 0, 0, 0, 0, 0, 0)) shouldBe Seq(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    bytesTo5BitNums(Seq(0x0FF.toByte, 0, 0, 0, 0, 0, 0, 0)) shouldBe Seq(31, 7, 0, 0, 0, 0, 0, 0, 0, 0)
+    bytesTo5BitNums(Seq(ff, ff, ff, ff, ff, ff, ff, ff)) shouldBe Seq(31, 31, 31, 31, 31, 31, 31, 31, 31, 31)
   }
 
   "to5BitAlphaNumeric" should "return a unique character for each of the 32 values of the 5 bit number" in {
@@ -142,17 +142,21 @@ class InvitationIdSpec extends FlatSpec with Matchers {
   }
 
   it should "produce a checksum that captures minor errors in large input" in {
-    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 7))
-    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](0, 2, 3, 4, 5, 6, 7, 8))
-    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](1, 2, 3, 3, 5, 6, 7, 8))
-    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 0, 7, 8))
-    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(Array[Byte](0, 0, 0, 4, 5, 0, 7, 8))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(
+      Array[Byte](1, 2, 3, 4, 5, 6, 7, 7))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(
+      Array[Byte](0, 2, 3, 4, 5, 6, 7, 8))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(
+      Array[Byte](1, 2, 3, 3, 5, 6, 7, 8))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(
+      Array[Byte](1, 2, 3, 4, 5, 0, 7, 8))
+    CRC10.calculate(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)) should not be CRC10.calculate(
+      Array[Byte](0, 0, 0, 4, 5, 0, 7, 8))
   }
 
   it should "produce checksums from either a String's bytes or bytes directly" in {
     CRC10.calculate("ABC") shouldBe CRC10.calculate("ABC".getBytes(StandardCharsets.UTF_8))
   }
-
 
   "isValid" should "be true for a valid InvitationId" in {
     InvitationId.isValid("ABERULMHCKKW3") shouldBe true

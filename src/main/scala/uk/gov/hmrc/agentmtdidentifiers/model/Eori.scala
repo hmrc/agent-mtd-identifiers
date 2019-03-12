@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ object Eori {
   def isValid(eori: String): Boolean =
     eori match {
       case eoriPattern(_*) => true
-      case _ => false
+      case _               => false
     }
 
   implicit val eoriReads = new SimpleObjectReads[Eori]("value", Eori.apply)

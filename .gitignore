@@ -1,4 +1,4 @@
-
+!.scalafmt.conf
 logs
 project/project
 project/target

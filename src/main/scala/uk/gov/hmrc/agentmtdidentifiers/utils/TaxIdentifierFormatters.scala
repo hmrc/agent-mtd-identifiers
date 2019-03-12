@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,13 @@ object TaxIdentifierFormatters {
 
   implicit class ArnOps(arn: Arn) {
 
-    def prettifyStrict: Option[String] = {
+    def prettifyStrict: Option[String] =
       if (Arn.isValid(arn.value)) {
         val unapplyPattern = """([A-Z]ARN)(\d{3})(\d{4})""".r
         unapplyPattern
           .unapplySeq(arn.value)
           .map(_.mkString("-"))
-      }
-      else None
-    }
+      } else None
 
     def prettify: String = prettifyStrict.getOrElse(arn.value)
   }
@@ -38,9 +36,9 @@ object TaxIdentifierFormatters {
   implicit class UtrOps(utr: Utr) {
 
     def prettifyStrict: Option[String] =
-      if(Utr.isValid(utr.value)){
-          val (first, last) = utr.value.trim.splitAt(5)
-          Some(s"$first $last")
+      if (Utr.isValid(utr.value)) {
+        val (first, last) = utr.value.trim.splitAt(5)
+        Some(s"$first $last")
       } else None
 
     def prettify: String = prettifyStrict.getOrElse(utr.value)
