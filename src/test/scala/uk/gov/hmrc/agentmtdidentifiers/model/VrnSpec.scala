@@ -23,60 +23,31 @@ class VrnSpec extends FlatSpec with Matchers {
   val reference97 = "101747696"
   val reference9755 = "101747641"
 
-  "isValid" should "be true for a valid VRN that passes Mod-97" in {
-    val total: Int = Vrn.weightedTotal(reference97)
-    val checkSum: Int = Vrn.takeCheckSumPart(reference97)
-
-    Vrn.calcCheckSum97(total) shouldBe checkSum
+  "isValid" should "return true if the vrn matches regex" in {
     Vrn.isValid(reference97) shouldBe true
-  }
-
-  "isValid" should "be true for a valid VRN that fails Mod-97 but passes Mod-9755" in {
-    val total: Int = Vrn.weightedTotal(reference9755)
-    val checkSum: Int = Vrn.takeCheckSumPart(reference9755)
-
-    Vrn.calcCheckSum97(total) should not be checkSum
-    Vrn.calcCheckSum9755(total) shouldBe checkSum
     Vrn.isValid(reference9755) shouldBe true
+    Vrn.isValid("123456789") shouldBe true
+    Vrn.isValid("234567890") shouldBe true
   }
 
-  "isValid" should "be false if the VRN's check digits fail both Mod-97 and Mod-9755" in {
-    val testRefFail: String = s"${reference97.take(8)}1"
-    val total: Int = Vrn.weightedTotal(testRefFail)
-    val checkSum: Int = Vrn.takeCheckSumPart(testRefFail)
-
-    Vrn.calcCheckSum97(total) should not be checkSum
-    Vrn.calcCheckSum9755(total) should not be checkSum
-    Vrn.isValid(testRefFail) shouldBe false
+  "isValid" should "return false if the vrn contains non-numbers" in {
+    Vrn.isValid("a" + reference97.substring(1)) shouldBe false
+    Vrn.isValid("a" + reference9755.substring(1)) shouldBe false
   }
 
-  "calcCheckSum97" should "return 97 if the total equals to some multiple of 97" in {
-    Vrn.calcCheckSum97(97) shouldBe 97
-    Vrn.calcCheckSum97(194) shouldBe 97
+  "isValid" should "return false if the vrn contains more than 9 numbers" in {
+    Vrn.isValid("1" + reference97) shouldBe false
+    Vrn.isValid("1" + reference9755) shouldBe false
   }
 
-  "calcCheckSum9755" should "return 97 if the total equals to some multiple of 97 - 55" in {
-    Vrn.calcCheckSum9755(97 - 55) shouldBe 97
-    Vrn.calcCheckSum9755(194 - 55) shouldBe 97
+  "isValid" should "return false if the vrn contains fewer than 9 numbers" in {
+    Vrn.isValid(reference97.substring(1)) shouldBe false
+    Vrn.isValid(reference9755.substring(1)) shouldBe false
   }
 
-  "weightTotal" should "return sum of the weighted digits" in {
-    Vrn.weightedTotal(reference97) shouldBe 98
-    Vrn.weightedTotal(reference9755) shouldBe 98
-    Vrn.weightedTotal("111111100") shouldBe 8 + 7 + 6 + 5 + 4 + 3 + 2
-    Vrn.weightedTotal("777777700") shouldBe 56 + 49 + 42 + 35 + 28 + 21 + 14
-  }
-
-  "regexCheck" should "return true if the vrn matches regex" in {
-    Vrn.regexCheck(reference97) shouldBe true
-    Vrn.regexCheck(reference9755) shouldBe true
-  }
-
-  "regexCheck" should "return false if the vrn does not match regex" in {
-    Vrn.regexCheck(reference97 + "1") shouldBe false
-    Vrn.regexCheck(reference9755 + "1") shouldBe false
-    Vrn.regexCheck("7777777") shouldBe false
-    Vrn.regexCheck("7777777AA") shouldBe false
-    Vrn.regexCheck("AAAAAAAAA") shouldBe false
+  "isValid" should "return false if the vrn contains whitespace" in {
+    Vrn.isValid(" " + reference97) shouldBe false
+    Vrn.isValid("\t" + reference97) shouldBe false
+    Vrn.isValid("         ") shouldBe false
   }
 }
