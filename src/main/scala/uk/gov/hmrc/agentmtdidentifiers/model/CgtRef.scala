@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import uk.gov.hmrc.domain.TaxIdentifier
+import uk.gov.hmrc.domain.{SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
 case class CgtRef(value: String) extends TaxIdentifier
 
 object CgtRef {
+
+  implicit val cgtReads: SimpleObjectReads[CgtRef] = new SimpleObjectReads[CgtRef]("value", CgtRef.apply)
+  implicit val cgtWrites: SimpleObjectWrites[CgtRef] = new SimpleObjectWrites[CgtRef](_.value)
 
   val cgtRegex = "^X[A-Z]CGTP[0-9]{9}$"
 
