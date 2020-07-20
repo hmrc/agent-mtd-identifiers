@@ -42,11 +42,15 @@ object HmrcBuild extends Build {
         ),
         play25 = Seq(
           "com.typesafe.play" %% "play-json"  % "2.5.19",
-          "uk.gov.hmrc" %% "domain" % "5.6.0-play-25"
+          "uk.gov.hmrc" %% "domain" % "5.9.0-play-25"
         ),
         play26 = Seq(
           "com.typesafe.play" %% "play-json"  % "2.6.13",
-          "uk.gov.hmrc" %% "domain" % "5.6.0-play-26"
+          "uk.gov.hmrc" %% "domain" % "5.9.0-play-26"
+        ),
+        play27 = Seq(
+          "com.typesafe.play" %% "play-json"  % "2.7.4",
+          "uk.gov.hmrc" %% "domain" % "5.9.0-play-27"
         )
       ),
       crossScalaVersions := List("2.11.12", "2.12.8"),
