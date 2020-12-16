@@ -25,6 +25,8 @@ class UrnSpec extends FlatSpec with Matchers {
     Urn.isValid("XXTRUST80000010") shouldBe true
     Urn.isValid("XXTRUST80000100") shouldBe true
     Urn.isValid("XXTRUST80001000") shouldBe true
+    Urn.isValid("11111111111111") shouldBe true
+    Urn.isValid("AAAAAAAAAAAAAAA") shouldBe true
   }
 
   it should "be false when it has more than 15 digits" in {
