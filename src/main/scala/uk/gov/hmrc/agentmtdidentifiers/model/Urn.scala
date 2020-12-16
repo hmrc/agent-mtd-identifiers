@@ -28,18 +28,10 @@ object Urn {
 
   def isValid(urn: String): Boolean =
     urn match {
-      case urnPattern(_*) => UrnCheck.isValid(urn)
+      case urnPattern(_*) => true
       case _              => false
     }
 
   implicit val urnReads = new SimpleObjectReads[Urn]("value", Urn.apply)
   implicit val urnWrites = new SimpleObjectWrites[Urn](_.value)
-}
-
-object UrnCheck extends Modulus11Check {
-
-  def isValid(urn: String): Boolean = {
-    val suffix: String = urn.substring(1)
-    calculateCheckCharacter(suffix) == urn.charAt(0)
-  }
 }
