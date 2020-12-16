@@ -39,8 +39,8 @@ class UrnSpec extends FlatSpec with Matchers {
     Urn.isValid("kk80000080000") shouldBe false
   }
 
-  it should "be true when it has all numbers" in {
-    Urn.isValid(urn = "999999999999999") shouldBe true
+  it should "be false when it has all numbers" in {
+    Urn.isValid(urn = "9999999999999999") shouldBe false
   }
 
   it should "be false when its lowercase letters" in {
