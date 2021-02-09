@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,11 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import uk.gov.hmrc.domain.{Modulus11Check, SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
-case class Utr(value: String) extends TaxIdentifier
+sealed trait TrustTaxIdentifier{
+  val value: String
+}
+case class Utr(value: String) extends TaxIdentifier with TrustTaxIdentifier
+
 
 object Utr {
 
