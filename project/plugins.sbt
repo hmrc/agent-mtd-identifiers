@@ -12,4 +12,4 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.16")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-play-cross-compilation" % "1.2.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-play-cross-compilation" % "2.0.0")
