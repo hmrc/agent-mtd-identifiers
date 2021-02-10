@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import uk.gov.hmrc.domain.{Modulus11Check, SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
+import uk.gov.hmrc.domain.{SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
 case class Urn(value: String) extends TaxIdentifier with TrustTaxIdentifier
 

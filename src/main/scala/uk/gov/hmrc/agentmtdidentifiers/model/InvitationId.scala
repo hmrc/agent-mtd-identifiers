@@ -19,7 +19,6 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 import java.security.MessageDigest
 
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, __}
 
 case class InvitationId(value: String)
