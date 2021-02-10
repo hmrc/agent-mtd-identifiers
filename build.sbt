@@ -39,7 +39,7 @@ lazy val root = (project in file("."))
     name := "agent-mtd-identifiers",
     organization := "uk.gov.hmrc",
     scalaVersion := "2.12.10",
-    crossScalaVersions := List("2.12.8"),
+    crossScalaVersions := List("2.12.10"),
     majorVersion := 0,
     makePublicallyAvailableOnBintray := true,
     scoverageSettings,

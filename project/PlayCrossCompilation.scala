@@ -1,7 +1,7 @@
 import uk.gov.hmrc.playcrosscompilation.AbstractPlayCrossCompilation
 import uk.gov.hmrc.playcrosscompilation.PlayVersion
 
-object PlayCrossCompilation extends AbstractPlayCrossCompilation(defaultPlayVersion = PlayVersion.Play27) {
+object PlayCrossCompilation extends AbstractPlayCrossCompilation(defaultPlayVersion = PlayVersion.Play26) {
   override def playCrossScalaBuilds(scalaVersions: Seq[String]): Seq[String] =
     playVersion match {
       case PlayVersion.Play26 => scalaVersions

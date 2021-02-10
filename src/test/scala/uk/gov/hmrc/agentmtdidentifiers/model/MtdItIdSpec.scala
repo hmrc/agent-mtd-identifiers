@@ -17,10 +17,10 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.{FlatSpec, Matchers}
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck._
 
-class MtdItIdSpec extends FlatSpec with Matchers with PropertyChecks {
+class MtdItIdSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
 
   val permittedChars = Gen.oneOf("abcdefghijklmnoqprstuvwxyzABCDEFGHIJKLMNOQPRSTUVWXYZ0123456789")
   val validMtdItId = Gen.listOfN(15, permittedChars).map(_.toArray).map(new String(_))
