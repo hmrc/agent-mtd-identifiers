@@ -18,9 +18,6 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import uk.gov.hmrc.domain.{Modulus11Check, SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
-sealed trait TrustTaxIdentifier{
-  val value: String
-}
 case class Utr(value: String) extends TaxIdentifier with TrustTaxIdentifier
 
 

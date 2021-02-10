@@ -16,23 +16,8 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
-
-class EoriSpec extends FlatSpec with Matchers {
-
-  it should "be true for a valid EORI" in {
-    Eori.isValid("A0000000000000a") shouldBe true
-  }
-
-  it should "be false when it has more than 17 digits" in {
-    Eori.isValid("00000000000000000000") shouldBe false
-  }
-
-  it should "be false when it is empty" in {
-    Eori.isValid("") shouldBe false
-  }
-
-  it should "be false when it has non-alphanumeric characters" in {
-    Eori.isValid("00000000000000!") shouldBe false
-  }
+trait TrustTaxIdentifier {
+  val value: String
 }
+
+
