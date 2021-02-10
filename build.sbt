@@ -22,10 +22,6 @@ val allDependencies = PlayCrossCompilation.dependencies(
     "org.pegdown" % "pegdown" % "1.6.0" % Test,
     "org.scalacheck" %% "scalacheck" % "1.14.0" % Test
   ),
-  play25 = Seq(
-    "com.typesafe.play" %% "play-json" % "2.5.19",
-    "uk.gov.hmrc" %% "domain" % "5.10.0-play-25"
-  ),
   play26 = Seq(
     "com.typesafe.play" %% "play-json" % "2.6.13",
     "uk.gov.hmrc" %% "domain" % "5.10.0-play-26"
@@ -43,7 +39,7 @@ lazy val root = (project in file("."))
     name := "agent-mtd-identifiers",
     organization := "uk.gov.hmrc",
     scalaVersion := "2.12.10",
-    crossScalaVersions := List("2.11.12", "2.12.8"),
+    crossScalaVersions := List("2.12.8"),
     majorVersion := 0,
     makePublicallyAvailableOnBintray := true,
     scoverageSettings,
