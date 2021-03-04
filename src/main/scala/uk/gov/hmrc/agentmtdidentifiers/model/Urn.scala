@@ -23,7 +23,7 @@ case class Urn(value: String) extends TaxIdentifier with TrustTaxIdentifier
 
 object Urn {
 
-  private val urnPattern = "^([A-Z0-9]{1,15})$".r
+  private val urnPattern = "^((?i)[a-z]{2}trust[0-9]{8})$".r
 
   def isValid(urn: String): Boolean =
     urn match {
