@@ -25,8 +25,7 @@ class UrnSpec extends FlatSpec with Matchers {
     Urn.isValid("XXTRUST80000010") shouldBe true
     Urn.isValid("XXTRUST80000100") shouldBe true
     Urn.isValid("XXTRUST80001000") shouldBe true
-    Urn.isValid("11111111111111") shouldBe true
-    Urn.isValid("AAAAAAAAAAAAAAA") shouldBe true
+    Urn.isValid("xxTRUST80001000") shouldBe true
   }
 
   it should "be false when it has more than 15 digits" in {
@@ -45,13 +44,19 @@ class UrnSpec extends FlatSpec with Matchers {
     Urn.isValid(urn = "9999999999999999") shouldBe false
   }
 
-  it should "be false when its lowercase letters" in {
+  it should "be false when its all lowercase letters" in {
     Urn.isValid(urn = "sssssssssssssss") shouldBe false
   }
-  it should "be false when it has non-digit characters" in {
+  it should "be false when it has no 2 letters at the start" in {
     Urn.isValid("((TRUST80000001") shouldBe false
   }
+  it should "be false when its all uppercase letters" in {
+    Urn.isValid(urn = "SSSSSSSSSSSSSSS") shouldBe false
+  }
 
+  it should "be false when it starts with 2 digits instead of letters" in {
+    Urn.isValid(urn = "33TRUST80001000") shouldBe false
+  }
   it should "be false when it has non-alphanumeric characters" in {
     Urn.isValid("200000000!") shouldBe false
 
