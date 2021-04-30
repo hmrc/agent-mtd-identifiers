@@ -47,11 +47,8 @@ lazy val root = (project in file("."))
     majorVersion := 0,
     makePublicallyAvailableOnBintray := true,
     scoverageSettings,
-    resolvers := Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
-      Resolver.bintrayRepo("hmrc", "release-candidates"),
+    resolvers ++= Seq(
       Resolver.typesafeRepo("releases"),
-      Resolver.jcenterRepo
     ),
     libraryDependencies ++= allDependencies
   )
