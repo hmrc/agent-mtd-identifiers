@@ -1,7 +1,4 @@
-import sbt.{Resolver}
-import uk.gov.hmrc.SbtArtifactory.autoImport.makePublicallyAvailableOnBintray
-import uk.gov.hmrc.{SbtArtifactory, SbtAutoBuildPlugin}
-import uk.gov.hmrc.versioning.SbtGitVersioning
+import sbt.Resolver
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 
@@ -24,28 +21,27 @@ val allDependencies = PlayCrossCompilation.dependencies(
   ),
   play26 = Seq(
     "com.typesafe.play" %% "play-json" % "2.6.13",
-    "uk.gov.hmrc" %% "domain" % "5.10.0-play-26"
+    "uk.gov.hmrc" %% "domain" % "6.0.0-play-26"
   ),
   play27 = Seq(
     "com.typesafe.play" %% "play-json" % "2.7.4",
-    "uk.gov.hmrc" %% "domain" % "5.10.0-play-27"
+    "uk.gov.hmrc" %% "domain" % "6.0.0-play-27"
   ),
   play28 = Seq(
     "com.typesafe.play"      %% "play-json"          % "2.8.1",
-    "uk.gov.hmrc" %% "domain" % "5.10.0-play-28"
+    "uk.gov.hmrc" %% "domain" % "6.0.0-play-28"
   )
 )
 
 
 lazy val root = (project in file("."))
-  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
     name := "agent-mtd-identifiers",
     organization := "uk.gov.hmrc",
     scalaVersion := "2.12.12",
     crossScalaVersions := List("2.12.12"),
     majorVersion := 0,
-    makePublicallyAvailableOnBintray := true,
+    isPublicArtefact := true,
     scoverageSettings,
     resolvers ++= Seq(
       Resolver.typesafeRepo("releases"),
