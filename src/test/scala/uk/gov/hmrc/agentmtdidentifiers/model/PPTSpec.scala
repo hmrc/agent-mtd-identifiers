@@ -27,24 +27,24 @@ class PPTSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
 
   it should "be true for a valid PPT" in {
     forAll(validPptId) { pptId =>
-      PPT.isValid(pptId) shouldBe true
+      PptRef.isValid(pptId) shouldBe true
     }
   }
 
   it should "be false when it has more than 15 digits" in {
-    PPT.isValid("0000000000000000") shouldBe false
+    PptRef.isValid("0000000000000000") shouldBe false
   }
 
   it should "be false when it is empty" in {
-    PPT.isValid("") shouldBe false
+    PptRef.isValid("") shouldBe false
   }
 
   it should "be false when it contains lowercase alpha-numeric" in {
-    PPT.isValid("abcde1234567890") shouldBe false
+    PptRef.isValid("abcde1234567890") shouldBe false
   }
 
   it should "be false when it has non-alphanumeric characters" in {
-    PPT.isValid("00000000000000!") shouldBe false
+    PptRef.isValid("00000000000000!") shouldBe false
   }
 
 }
