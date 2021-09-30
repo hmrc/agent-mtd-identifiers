@@ -18,9 +18,9 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import uk.gov.hmrc.domain.{SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
-case class PPT(value: String) extends TaxIdentifier
+case class PptRef(value: String) extends TaxIdentifier
 
-object PPT {
+object PptRef {
 
   private val pattern = "^[A-Z0-9]{1,15}$".r
 
@@ -30,6 +30,6 @@ object PPT {
       case _           => false
     }
 
-  implicit val reads = new SimpleObjectReads[PPT]("value", PPT.apply)
-  implicit val writes = new SimpleObjectWrites[PPT](_.value)
+  implicit val reads = new SimpleObjectReads[PptRef]("value", PptRef.apply)
+  implicit val writes = new SimpleObjectWrites[PptRef](_.value)
 }
