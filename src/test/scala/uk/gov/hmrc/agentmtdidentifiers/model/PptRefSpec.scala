@@ -20,7 +20,7 @@ import org.scalacheck.Gen
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class PPTSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
+class PptRefSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
 
   val permittedChars = Gen.oneOf("ABCDEFGHIJKLMNOQPRSTUVWXYZ0123456789")
   val validPptId = Gen.listOfN(15, permittedChars).map(_.toArray).map(new String(_))
