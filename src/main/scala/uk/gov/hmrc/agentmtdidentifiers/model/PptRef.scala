@@ -22,7 +22,7 @@ case class PptRef(value: String) extends TaxIdentifier
 
 object PptRef {
 
-  private val pattern = "X[A-Z]PPT000[0-9]{6}".r
+  private val pattern = "X[A-Z]PPT000[0-9]{7}".r
 
   def isValid(ppt: String): Boolean =
     ppt match {

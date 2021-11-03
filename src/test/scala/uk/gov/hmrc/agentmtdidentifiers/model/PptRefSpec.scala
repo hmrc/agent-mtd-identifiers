@@ -22,14 +22,14 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 class PptRefSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
 
   it should "be true for a valid PPT" in {
-      PptRef.isValid("XAPPT000000000") shouldBe true
+      PptRef.isValid("XAPPT0000000000") shouldBe true
   }
 
-  it should "be false when it has more than 14 digits" in {
-    PptRef.isValid("XAPPT0000000000") shouldBe false
+  it should "be false when it has more than 15 digits" in {
+    PptRef.isValid("XAPPT00000000000") shouldBe false
   }
 
-  it should "be false when it has less than 14 digits" in {
+  it should "be false when it has less than 15 digits" in {
     PptRef.isValid("XAPPT00000000") shouldBe false
   }
 
