@@ -16,23 +16,21 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalacheck.Gen
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class PptRefSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
 
-  val permittedChars = Gen.oneOf("ABCDEFGHIJKLMNOQPRSTUVWXYZ0123456789")
-  val validPptId = Gen.listOfN(15, permittedChars).map(_.toArray).map(new String(_))
-
   it should "be true for a valid PPT" in {
-    forAll(validPptId) { pptId =>
-      PptRef.isValid(pptId) shouldBe true
-    }
+      PptRef.isValid("XAPPT0000000000") shouldBe true
   }
 
   it should "be false when it has more than 15 digits" in {
-    PptRef.isValid("0000000000000000") shouldBe false
+    PptRef.isValid("XAPPT00000000000") shouldBe false
+  }
+
+  it should "be false when it has less than 15 digits" in {
+    PptRef.isValid("XAPPT00000000") shouldBe false
   }
 
   it should "be false when it is empty" in {
