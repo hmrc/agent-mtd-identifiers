@@ -9,7 +9,7 @@ lazy val scoverageSettings = {
     ScoverageKeys.coverageMinimum := 80.00,
     ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true,
-    parallelExecution in Test := false
+    Test / parallelExecution := false
   )
 }
 
@@ -29,7 +29,7 @@ val allDependencies = PlayCrossCompilation.dependencies(
   ),
   play28 = Seq(
     "com.typesafe.play"      %% "play-json"          % "2.8.1",
-    "uk.gov.hmrc" %% "domain" % "6.0.0-play-28"
+    "uk.gov.hmrc" %% "domain" % "7.0.0-play-28"
   )
 )
 
