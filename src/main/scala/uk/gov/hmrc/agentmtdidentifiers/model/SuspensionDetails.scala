@@ -14,32 +14,38 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentclientauthorisation.model
+package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.agentclientauthorisation.model.Service._
+import uk.gov.hmrc.agentmtdidentifiers.model.Service._
+import uk.gov.hmrc.agentmtdidentifiers.model.SuspensionDetails.{serviceToRegime, validSuspensionRegimes}
 
-case class SuspensionDetails(suspensionStatus: Boolean, suspendedRegimes: Set[String]) {
+case class SuspensionDetails(suspensionStatus: Boolean, regimes: Option[Set[String]]) {
+
+  val suspendedRegimes: Set[String] = {
+    regimes.fold(Set.empty[String]) { rs =>
+      if (rs.contains("ALL") || rs.contains("AGSV")) validSuspensionRegimes
+      else rs
+    }
+  }
 
   def isRegimeSuspended(service: Service): Boolean = {
-    val regime = SuspensionDetails.serviceToRegime(service)
-    suspendedRegimes.contains(regime)
+    suspendedRegimes.contains(serviceToRegime(service))
   }
 
   def isRegimeSuspended(id: String): Boolean = {
     def idToService(id: String): Service = {
-      SuspensionDetails.serviceToRegime
+      serviceToRegime
         .find(_._1.id == id)
         .map(_._1)
         .getOrElse(throw new IllegalArgumentException(s"Service of ID '$id' not known"))
     }
 
-    val regime = SuspensionDetails.serviceToRegime(idToService(id))
-    suspendedRegimes.contains(regime)
+    suspendedRegimes.contains(serviceToRegime(idToService(id)))
   }
 
   def suspendedRegimesForServices(serviceIds: Set[String]): Set[String] = {
-    SuspensionDetails.serviceToRegime
+    serviceToRegime
       .filterKeys(s => serviceIds.contains(s.id)).values.toSet
       .intersect(suspendedRegimes)
   }
@@ -57,13 +63,6 @@ object SuspensionDetails {
 
   //PERSONAL-INCOME-RECORD service has no enrolment / regime so cannot be suspended
   lazy val validSuspensionRegimes: Set[String] = serviceToRegime.filterKeys(Seq(MtdIt, Vat, Trust, CapitalGains, Ppt).contains(_)).values.toSet
-
-  def apply(suspensionStatus: Boolean, regimes: Option[Set[String]]): SuspensionDetails = {
-    val suspendedRegimes =
-      regimes.fold(Set.empty[String])(rs => if (rs.contains("ALL") || rs.contains("AGSV")) validSuspensionRegimes else rs)
-
-    new SuspensionDetails(suspensionStatus, suspendedRegimes)
-  }
 
   implicit val formats: OFormat[SuspensionDetails] = Json.format
 

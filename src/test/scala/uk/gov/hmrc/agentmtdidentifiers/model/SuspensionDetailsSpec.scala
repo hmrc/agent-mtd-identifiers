@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentclientauthorisation.model
+package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json.toJson
-import uk.gov.hmrc.agentclientauthorisation.model.Service.{HMRCCGTPD, HMRCMTDIT}
+import uk.gov.hmrc.agentmtdidentifiers.model.Service.{HMRCCGTPD, HMRCMTDIT}
 
 class SuspensionDetailsSpec extends WordSpec with Matchers {
 
@@ -121,29 +121,6 @@ class SuspensionDetailsSpec extends WordSpec with Matchers {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
         .isAnyRegimeSuspendedForServices(Set(HMRCCGTPD)) shouldBe false
     }
-  }
-
-  "JSON conversion" should {
-    "contain 'suspendedRegimes' element with values matching input regimes when they do not contain either 'ALL' or 'AGSV'" in {
-      val suspensionDetails = SuspensionDetails(suspensionStatus = suspensionStatusTrue, regimes = Some(inputRegimes))
-
-      val json = toJson(suspensionDetails)
-
-      (json \ "suspensionStatus").as[Boolean] shouldBe true
-      (json \ "suspendedRegimes").as[Set[String]] shouldBe Set("aRegime", "bRegime")
-    }
-
-    "contain 'suspendedRegimes' element with all valid suspension regimes when input contains 'ALL' or 'AGSV'" in {
-      Seq("ALL", "AGSV") foreach { regime =>
-        val suspensionDetails = SuspensionDetails(suspensionStatus = suspensionStatusTrue, regimes = Some(inputRegimes + regime))
-
-        val json = toJson(suspensionDetails)
-
-        (json \ "suspensionStatus").as[Boolean] shouldBe true
-        (json \ "suspendedRegimes").as[Set[String]] shouldBe Set("ITSA", "PPT", "TRS", "VATC", "CGT")
-      }
-    }
-
   }
 
 }
