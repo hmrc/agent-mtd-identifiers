@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentclientauthorisation.model
+package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json.Format
-import uk.gov.hmrc.agentmtdidentifiers.model._
 import uk.gov.hmrc.domain.{Nino, SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 
 sealed abstract class Service(
