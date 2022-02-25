@@ -20,6 +20,7 @@ import java.security.MessageDigest
 
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{Format, __}
+import play.api.libs.functional.syntax._
 
 case class InvitationId(value: String)
 
