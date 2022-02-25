@@ -17,7 +17,6 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.agentmtdidentifiers.model.Service.{HMRCCGTPD, HMRCMTDIT}
 
 class SuspensionDetailsSpec extends WordSpec with Matchers {

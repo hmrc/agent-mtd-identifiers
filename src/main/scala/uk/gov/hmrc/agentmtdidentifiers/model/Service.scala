@@ -27,6 +27,8 @@ sealed abstract class Service(
   val supportedClientIdType: ClientIdType[_ <: TaxIdentifier],
   val requiresKnownFactsCheck: Boolean) {
 
+  override def toString: String = this.id
+
   override def equals(that: Any): Boolean =
     that match {
       case that: Service => this.id.equals(that.id)
