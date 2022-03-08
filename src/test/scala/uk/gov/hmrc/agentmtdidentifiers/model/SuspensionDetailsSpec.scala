@@ -42,8 +42,8 @@ class SuspensionDetailsSpec extends WordSpec with Matchers {
     }
 
     "be all valid suspension regimes when input regimes contains 'ALL' or 'AGSV'" in {
-      SuspensionDetails(suspensionStatusTrue, Some(inputRegimes + "ALL")).suspendedRegimes shouldBe Set("ITSA", "PPT", "TRS", "VATC", "CGT")
-      SuspensionDetails(suspensionStatusTrue, Some(inputRegimes + "AGSV")).suspendedRegimes shouldBe Set("ITSA", "PPT", "TRS", "VATC", "CGT")
+      SuspensionDetails(suspensionStatusTrue, Some(inputRegimes + "ALL")).suspendedRegimes shouldBe Set("ITSA", "PPT", "TRS", "VATC", "CGT", "PIR")
+      SuspensionDetails(suspensionStatusTrue, Some(inputRegimes + "AGSV")).suspendedRegimes shouldBe Set("ITSA", "PPT", "TRS", "VATC", "CGT", "PIR")
     }
 
     "match provided regimes when input does not contain either 'ALL' or 'AGSV'" in {
