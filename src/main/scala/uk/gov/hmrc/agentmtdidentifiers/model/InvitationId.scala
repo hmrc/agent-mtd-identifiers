@@ -18,6 +18,7 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{Format, __}
+import play.api.libs.functional.syntax._ // Keep this
 
 import java.security.MessageDigest
 
