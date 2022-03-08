@@ -18,34 +18,33 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.agentmtdidentifiers.model.Service._
-import uk.gov.hmrc.agentmtdidentifiers.model.SuspensionDetails.{serviceToRegime, validSuspensionRegimes}
 
 case class SuspensionDetails(suspensionStatus: Boolean, regimes: Option[Set[String]]) {
 
   val suspendedRegimes: Set[String] = {
     regimes.fold(Set.empty[String]) { rs =>
-      if (rs.contains("ALL") || rs.contains("AGSV")) validSuspensionRegimes
+      if (rs.contains("ALL") || rs.contains("AGSV")) SuspensionDetails.validSuspensionRegimes
       else rs
     }
   }
 
   def isRegimeSuspended(service: Service): Boolean = {
-    suspendedRegimes.contains(serviceToRegime(service))
+    suspendedRegimes.contains(SuspensionDetails.serviceToRegime(service))
   }
 
   def isRegimeSuspended(id: String): Boolean = {
     def idToService(id: String): Service = {
-      serviceToRegime
+      SuspensionDetails.serviceToRegime
         .find(_._1.id == id)
         .map(_._1)
         .getOrElse(throw new IllegalArgumentException(s"Service of ID '$id' not known"))
     }
 
-    suspendedRegimes.contains(serviceToRegime(idToService(id)))
+    suspendedRegimes.contains(SuspensionDetails.serviceToRegime(idToService(id)))
   }
 
   def suspendedRegimesForServices(serviceIds: Set[String]): Set[String] = {
-    serviceToRegime
+    SuspensionDetails.serviceToRegime
       .filterKeys(s => serviceIds.contains(s.id)).values.toSet
       .intersect(suspendedRegimes)
   }
@@ -61,8 +60,9 @@ object SuspensionDetails {
   lazy val serviceToRegime: Map[Service, String] =
     Map(MtdIt -> "ITSA", Vat -> "VATC", Trust -> "TRS", TrustNT -> "TRS", CapitalGains -> "CGT", PersonalIncomeRecord -> "PIR", Ppt -> "PPT")
 
-  //PERSONAL-INCOME-RECORD service has no enrolment / regime so cannot be suspended
-  lazy val validSuspensionRegimes: Set[String] = serviceToRegime.filterKeys(Seq(MtdIt, Vat, Trust, CapitalGains, Ppt).contains(_)).values.toSet
+  private val suspendableServices = Seq(MtdIt, Vat, Trust, CapitalGains, PersonalIncomeRecord, Ppt)
+
+  lazy val validSuspensionRegimes: Set[String] = serviceToRegime.filterKeys(suspendableServices.contains(_)).values.toSet
 
   implicit val formats: OFormat[SuspensionDetails] = Json.format
 
