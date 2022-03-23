@@ -69,7 +69,7 @@ object Service {
   val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt)
 
   def findById(id: String): Option[Service] = supportedServices.find(_.id == id)
-  def forId(id: String): Service = findById(id).getOrElse(throw new Exception("Not a valid service"))
+  def forId(id: String): Service = findById(id).getOrElse(throw new Exception("Not a valid service id: " + id))
   def forInvitationId(invitationId: InvitationId): Option[Service] =
     supportedServices.find(_.invitationIdPrefix == invitationId.value.head)
 
