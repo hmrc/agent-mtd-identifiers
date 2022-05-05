@@ -29,7 +29,7 @@ val allDependencies = PlayCrossCompilation.dependencies(
   ),
   play28 = Seq(
     "com.typesafe.play"      %% "play-json"          % "2.8.1",
-    "uk.gov.hmrc" %% "domain" % "7.0.0-play-28"
+    "uk.gov.hmrc" %% "domain" % "8.0.0-play-28"
   )
 )
 
@@ -38,8 +38,8 @@ lazy val root = (project in file("."))
   .settings(
     name := "agent-mtd-identifiers",
     organization := "uk.gov.hmrc",
-    scalaVersion := "2.12.12",
-    crossScalaVersions := List("2.12.12"),
+    scalaVersion := "2.12.15",
+    crossScalaVersions := List("2.12.15"),
     majorVersion := 0,
     isPublicArtefact := true,
     scoverageSettings,
