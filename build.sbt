@@ -29,7 +29,7 @@ val allDependencies = PlayCrossCompilation.dependencies(
   ),
   play28 = Seq(
     "com.typesafe.play"      %% "play-json"          % "2.8.1",
-    "uk.gov.hmrc" %% "domain" % "8.0.0-play-28"
+    "uk.gov.hmrc" %% "domain" % "8.1.0-play-28"
   )
 )
 
