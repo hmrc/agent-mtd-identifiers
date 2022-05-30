@@ -16,20 +16,12 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
-class EnrolmentSpec extends FlatSpec with Matchers {
+case class Client(enrolmentKey: String, friendlyName: String)
 
-  "Enrolment" should "serialise to JSON" in {
-    val enrolment = Enrolment("HMRC-MTD-IT", "Active", "myName", List(Identifier("MTDITID", "XX12345")))
-    val json = Json.toJson(enrolment).toString
-    json shouldBe  """{"service":"HMRC-MTD-IT","state":"Active","friendlyName":"myName","identifiers":[{"key":"MTDITID","value":"XX12345"}]}"""
-  }
+object Client {
+  implicit val format: Format[Client] = Json.format[Client]
 
-  "Identifier" should "toString" in {
-    val identifier = Identifier("HMRC-MTD-IT", "XX12345")
-    identifier.toString shouldBe "HMRC-MTD-IT~XX12345"
-  }
-
+  def fromEnrolment(enrolment: Enrolment): Client = Client(EnrolmentKey.enrolmentKeys(enrolment).head, enrolment.friendlyName)
 }
