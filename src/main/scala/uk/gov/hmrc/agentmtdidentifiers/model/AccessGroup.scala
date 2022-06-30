@@ -16,13 +16,16 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import play.api.libs.json.{Json, OFormat}
+import org.bson.types.ObjectId
+import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, OFormat, Reads, Writes}
 import uk.gov.hmrc.agentmtdidentifiers.model.GroupId.{ENCODING, SPLITTER}
 
 import java.net.{URLDecoder, URLEncoder}
 import java.time.LocalDateTime
+import scala.util.Try
 
 case class AccessGroup(
+                        _id: ObjectId,
                         arn: Arn,
                         groupName: String,
                         created: LocalDateTime,
@@ -34,6 +37,35 @@ case class AccessGroup(
                       )
 
 object AccessGroup {
+
+  def apply(arn: Arn,
+            groupName: String,
+            created: LocalDateTime,
+            lastUpdated: LocalDateTime,
+            createdBy: AgentUser,
+            lastUpdatedBy: AgentUser,
+            teamMembers: Option[Set[AgentUser]],
+            clients: Option[Set[Enrolment]]): AccessGroup = {
+
+    AccessGroup(
+      new ObjectId(), arn, groupName,
+      created, lastUpdated, createdBy, lastUpdatedBy,
+      teamMembers, clients)
+  }
+
+  implicit val objectIdFormat: Format[ObjectId] = Format(
+    Reads[ObjectId] {
+      case s: JsString => {
+        val maybeOID: Try[ObjectId] = Try{new ObjectId(s.value)}
+        if(maybeOID.isSuccess) JsSuccess(maybeOID.get) else {
+          JsError("Expected ObjectId as JsString")
+        }
+      }
+      case _ => JsError()
+    },
+    Writes[ObjectId]((o: ObjectId) => JsString(o.toHexString))
+  )
+
   implicit val formatAccessGroup: OFormat[AccessGroup] = Json.format[AccessGroup]
 }
 
@@ -43,7 +75,7 @@ object AccessGroupSummary {
 
   def convert(accessGroup: AccessGroup): AccessGroupSummary =
     AccessGroupSummary(
-      GroupId(accessGroup.arn, accessGroup.groupName).encode,
+      accessGroup._id.toHexString,
       accessGroup.groupName,
       accessGroup.clients.fold(0)(_.size),
       accessGroup.teamMembers.fold(0)(_.size)
