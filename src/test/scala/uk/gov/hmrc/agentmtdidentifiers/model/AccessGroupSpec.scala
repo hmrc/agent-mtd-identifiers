@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
+import org.bson.types.ObjectId
 import org.scalatest.{FlatSpec, Matchers}
 import play.api.libs.json.{JsSuccess, Json}
 
@@ -43,8 +44,11 @@ class AccessGroupSpec extends FlatSpec with Matchers {
 
       val now = LocalDateTime.now()
 
+      val id = new ObjectId()
+
       val accessGroup: AccessGroup =
         AccessGroup(
+          id,
           arn,
           groupName,
           now,
@@ -55,7 +59,7 @@ class AccessGroupSpec extends FlatSpec with Matchers {
           Some(Set(enrolment1, enrolment2, enrolment3))
         )
 
-      val jsonString = s"""{"arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"service":"HMRC-MTD-VAT","state":"Activated","friendlyName":"John Innes","identifiers":[{"key":"VRN","value":"101747641"}]},{"service":"HMRC-PPT-ORG","state":"Activated","friendlyName":"Frank Wright","identifiers":[{"key":"EtmpRegistrationNumber","value":"XAPPT0000012345"}]},{"service":"HMRC-CGT-PD","state":"Activated","friendlyName":"George Candy","identifiers":[{"key":"CgtRef","value":"XMCGTP123456789"}]}]}"""
+      val jsonString = s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"service":"HMRC-MTD-VAT","state":"Activated","friendlyName":"John Innes","identifiers":[{"key":"VRN","value":"101747641"}]},{"service":"HMRC-PPT-ORG","state":"Activated","friendlyName":"Frank Wright","identifiers":[{"key":"EtmpRegistrationNumber","value":"XAPPT0000012345"}]},{"service":"HMRC-CGT-PD","state":"Activated","friendlyName":"George Candy","identifiers":[{"key":"CgtRef","value":"XMCGTP123456789"}]}]}"""
 
       Json.toJson(accessGroup).toString shouldBe jsonString
       Json.fromJson[AccessGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
