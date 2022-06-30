@@ -15,6 +15,7 @@ lazy val scoverageSettings = {
 
 val allDependencies = PlayCrossCompilation.dependencies(
   shared = Seq(
+    "org.mongodb" % "bson" % "4.6.1",
     "org.scalatest" %% "scalatest" % "3.0.6" % Test,
     "org.pegdown" % "pegdown" % "1.6.0" % Test,
     "org.scalacheck" %% "scalacheck" % "1.14.0" % Test
@@ -30,8 +31,7 @@ val allDependencies = PlayCrossCompilation.dependencies(
   play28 = Seq(
     "com.typesafe.play" %% "play-json" % "2.9.2",
     "joda-time" % "joda-time" % "2.10.14",
-    "uk.gov.hmrc" %% "domain" % "8.1.0-play-28",
-    "org.mongodb" % "bson" % "4.6.1"
+    "uk.gov.hmrc" %% "domain" % "8.1.0-play-28"
   )
 )
 
