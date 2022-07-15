@@ -29,4 +29,6 @@ case class UserDetails(userId: Option[String] = None,
 
 object UserDetails {
   implicit val formats: Format[UserDetails] = Json.format
+
+  def fromAgentUser(agentUser: AgentUser): UserDetails = UserDetails(userId = Some(agentUser.id), name = Some(agentUser.name))
 }
