@@ -16,7 +16,13 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, Json, OFormat}
+
+case class AgentUser(id: String, name: String)
+
+object AgentUser {
+  implicit val formatAgentUser: OFormat[AgentUser] = Json.format[AgentUser]
+}
 
 /**
  * Cut down version of UserDetails from users-groups-search.
@@ -28,5 +34,9 @@ case class UserDetails(userId: Option[String] = None,
                        email: Option[String] = None)
 
 object UserDetails {
+
+  def fromAgentUser(agentUser: AgentUser): UserDetails =
+    UserDetails(userId = Some(agentUser.id), name = Some(agentUser.name))
+
   implicit val formats: Format[UserDetails] = Json.format
 }

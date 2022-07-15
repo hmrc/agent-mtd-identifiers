@@ -75,12 +75,6 @@ object OptinEventType {
   implicit val writes: Writes[OptinEventType] = (o: OptinEventType) => JsString(o.value)
 }
 
-case class AgentUser(id: String, name: String)
-
-object AgentUser {
-  implicit val formatAgentUser: OFormat[AgentUser] = Json.format[AgentUser]
-}
-
 case class OptinEvent(optinEventType: OptinEventType, user: AgentUser, eventDateTime: LocalDateTime)
 
 object OptinEvent {
