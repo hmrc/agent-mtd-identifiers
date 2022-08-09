@@ -31,7 +31,7 @@ object UserEnrolment {
  * @param assign combinations to assign using ES11 API
  * @param unassign combinations to unassign using ES12 API
  */
-case class UserEnrolmentAssignments(assign: Set[UserEnrolment], unassign: Set[UserEnrolment])
+case class UserEnrolmentAssignments(assign: Set[UserEnrolment], unassign: Set[UserEnrolment], arn: Arn)
 
 object UserEnrolmentAssignments {
   implicit val formats: Format[UserEnrolmentAssignments] = Json.format
