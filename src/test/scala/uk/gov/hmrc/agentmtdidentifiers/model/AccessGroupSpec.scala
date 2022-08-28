@@ -31,16 +31,9 @@ class AccessGroupSpec extends FlatSpec with Matchers {
       val user1: AgentUser = AgentUser("user1", "User 1")
       val user2: AgentUser = AgentUser("user2", "User 2")
 
-      val enrolment1: Enrolment =
-        Enrolment("HMRC-MTD-VAT", "Activated", "John Innes", Seq(Identifier("VRN", "101747641")))
-      val enrolment2: Enrolment = Enrolment(
-        "HMRC-PPT-ORG",
-        "Activated",
-        "Frank Wright",
-        Seq(Identifier("EtmpRegistrationNumber", "XAPPT0000012345"))
-      )
-      val enrolment3: Enrolment =
-        Enrolment("HMRC-CGT-PD", "Activated", "George Candy", Seq(Identifier("CgtRef", "XMCGTP123456789")))
+      val client1: Client = Client("HMRC-MTD-VAT~VRN~101747641", "John Innes")
+      val client2: Client = Client("HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345", "Frank Wright")
+      val client3: Client = Client("HMRC-CGT-PD~CgtRef~XMCGTP123456789", "George Candy")
 
       val now = LocalDateTime.now()
 
@@ -56,10 +49,11 @@ class AccessGroupSpec extends FlatSpec with Matchers {
           agent,
           agent,
           Some(Set(agent, user1, user2)),
-          Some(Set(enrolment1, enrolment2, enrolment3))
+          Some(Set(client1, client2, client3))
         )
 
-      val jsonString = s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"service":"HMRC-MTD-VAT","state":"Activated","friendlyName":"John Innes","identifiers":[{"key":"VRN","value":"101747641"}]},{"service":"HMRC-PPT-ORG","state":"Activated","friendlyName":"Frank Wright","identifiers":[{"key":"EtmpRegistrationNumber","value":"XAPPT0000012345"}]},{"service":"HMRC-CGT-PD","state":"Activated","friendlyName":"George Candy","identifiers":[{"key":"CgtRef","value":"XMCGTP123456789"}]}]}"""
+      val jsonString =
+        s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"},{"enrolmentKey":"HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345","friendlyName":"Frank Wright"},{"enrolmentKey":"HMRC-CGT-PD~CgtRef~XMCGTP123456789","friendlyName":"George Candy"}]}""".stripMargin
 
       Json.toJson(accessGroup).toString shouldBe jsonString
       Json.fromJson[AccessGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)

@@ -33,7 +33,7 @@ case class AccessGroup(
                         createdBy: AgentUser,
                         lastUpdatedBy: AgentUser,
                         teamMembers: Option[Set[AgentUser]],
-                        clients: Option[Set[Enrolment]]
+                        clients: Option[Set[Client]]
                       )
 
 object AccessGroup {
@@ -45,7 +45,7 @@ object AccessGroup {
             createdBy: AgentUser,
             lastUpdatedBy: AgentUser,
             teamMembers: Option[Set[AgentUser]],
-            clients: Option[Set[Enrolment]]): AccessGroup = {
+            clients: Option[Set[Client]]): AccessGroup = {
 
     AccessGroup(
       new ObjectId(), arn, groupName,
