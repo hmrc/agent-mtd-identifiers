@@ -17,14 +17,14 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import java.nio.charset.StandardCharsets
-
-import org.joda.time.DateTime
 import org.scalatest.{FlatSpec, Matchers}
 import uk.gov.hmrc.agentmtdidentifiers.model.InvitationId._
 
+import java.time.{LocalDate, LocalDateTime}
+
 class InvitationIdSpec extends FlatSpec with Matchers {
   val invWithoutPrefix = (prefix: Char) =>
-    InvitationId.create("myAgency", "clientId", "service", DateTime.parse("2001-01-01"))(prefix)
+    InvitationId.create("myAgency", "clientId", "service", LocalDate.parse("2001-01-01").atStartOfDay())(prefix)
 
   "create" should "add prefix to start of identifier" in {
     invWithoutPrefix('A').value.head shouldBe 'A'
@@ -50,15 +50,15 @@ class InvitationIdSpec extends FlatSpec with Matchers {
     val agency = "agency"
     val clientId = "clientId"
     val service = "service"
-    val time = DateTime.parse("2001-01-01")
+    val time = LocalDate.parse("2001-01-01").atStartOfDay()
     implicit val prefix = 'A'
 
     val invA = InvitationId.create(agency, clientId, service, time).value
     val invB = InvitationId.create("different", clientId, service, time).value
     val invC = InvitationId.create(agency, "different", service, time).value
     val invD = InvitationId.create(agency, clientId, "different", time).value
-    val invE = InvitationId.create(agency, clientId, service, DateTime.parse("1999-01-01")).value
-    val invF = InvitationId.create(agency, clientId, service, DateTime.parse("1999-01-01"))('Z').value
+    val invE = InvitationId.create(agency, clientId, service, LocalDate.parse("1999-01-01").atStartOfDay()).value
+    val invF = InvitationId.create(agency, clientId, service, LocalDate.parse("1999-01-01").atStartOfDay())('Z').value
 
     Set(invA, invB, invC, invD, invE, invF).size shouldBe 6
   }
