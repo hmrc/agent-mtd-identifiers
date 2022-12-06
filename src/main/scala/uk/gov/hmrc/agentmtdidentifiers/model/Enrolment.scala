@@ -22,7 +22,9 @@ case class Enrolment(
                       service: String,
                       state: String,
                       friendlyName: String,
-                      identifiers: Seq[Identifier]
+                      identifiers: Seq[Identifier],
+                      activationDate: Option[String] = None,
+                      enrolmentDate: Option[String] = None
                     )
 
 object Enrolment {
