@@ -33,7 +33,9 @@ case class AccessGroup(
                         createdBy: AgentUser,
                         lastUpdatedBy: AgentUser,
                         teamMembers: Option[Set[AgentUser]],
-                        clients: Option[Set[Client]]
+                        clients: Option[Set[Client]],
+                        taxService: Option[Service], // if None, custom group
+                        excludedClients: Option[Set[Client]] //only used if taxService is there, want to be explicit from clients
                       )
 
 object AccessGroup {
@@ -45,22 +47,23 @@ object AccessGroup {
             createdBy: AgentUser,
             lastUpdatedBy: AgentUser,
             teamMembers: Option[Set[AgentUser]],
-            clients: Option[Set[Client]]): AccessGroup = {
+            clients: Option[Set[Client]],
+            taxService: Option[Service],
+            excludedClients: Option[Set[Client]]): AccessGroup = {
 
     AccessGroup(
       new ObjectId(), arn, groupName,
       created, lastUpdated, createdBy, lastUpdatedBy,
-      teamMembers, clients)
+      teamMembers, clients, taxService, excludedClients)
   }
 
   implicit val objectIdFormat: Format[ObjectId] = Format(
     Reads[ObjectId] {
-      case s: JsString => {
+      case s: JsString =>
         val maybeOID: Try[ObjectId] = Try{new ObjectId(s.value)}
         if(maybeOID.isSuccess) JsSuccess(maybeOID.get) else {
           JsError("Expected ObjectId as JsString")
         }
-      }
       case _ => JsError()
     },
     Writes[ObjectId]((o: ObjectId) => JsString(o.toHexString))
@@ -69,7 +72,7 @@ object AccessGroup {
   implicit val formatAccessGroup: OFormat[AccessGroup] = Json.format[AccessGroup]
 }
 
-case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Int, teamMemberCount: Int)
+case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Int, teamMemberCount: Int, taxService: Option[Service])
 
 object AccessGroupSummary {
 
@@ -78,12 +81,14 @@ object AccessGroupSummary {
       accessGroup._id.toHexString,
       accessGroup.groupName,
       accessGroup.clients.fold(0)(_.size),
-      accessGroup.teamMembers.fold(0)(_.size)
+      accessGroup.teamMembers.fold(0)(_.size),
+      accessGroup.taxService
     )
 
   implicit val formatAccessGroupSummary: OFormat[AccessGroupSummary] = Json.format[AccessGroupSummary]
 }
 
+//TODO - check if we still need this, could be removed
 case class AccessGroupSummaries(groups: Seq[AccessGroupSummary], unassignedClients: Set[Client])
 
 object AccessGroupSummaries {

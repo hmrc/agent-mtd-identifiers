@@ -49,7 +49,9 @@ class AccessGroupSpec extends FlatSpec with Matchers {
           agent,
           agent,
           Some(Set(agent, user1, user2)),
-          Some(Set(client1, client2, client3))
+          Some(Set(client1, client2, client3)),
+          None,
+          None
         )
 
       val jsonString =
