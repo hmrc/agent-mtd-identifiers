@@ -18,15 +18,15 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json._
 
-case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Int, teamMemberCount: Int, isCustomGroup: Boolean)
+case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Option[Int], teamMemberCount: Int, isCustomGroup: Boolean)
 
 object AccessGroupSummary {
 
-  def convertCustom(accessGroup: AccessGroup): AccessGroupSummary =
+  def convertCustomGroup(accessGroup: AccessGroup): AccessGroupSummary =
     AccessGroupSummary(
       accessGroup._id.toHexString,
       accessGroup.groupName,
-      accessGroup.clients.fold(0)(_.size),
+      Some(accessGroup.clients.fold(0)(_.size)),
       accessGroup.teamMembers.fold(0)(_.size),
       isCustomGroup = true
     )
@@ -35,9 +35,9 @@ object AccessGroupSummary {
     AccessGroupSummary(
       accessGroup._id.toHexString,
       accessGroup.groupName,
-      0, // info is obtained elsewhere, custom groups should never have less than 1 client
+      None, // info not retained in group - group could be empty
       accessGroup.teamMembers.fold(0)(_.size),
-      isCustomGroup = false // could use client count but this is more explicit
+      isCustomGroup = false
     )
 
   implicit val formatAccessGroupSummary: OFormat[AccessGroupSummary] = Json.format[AccessGroupSummary]

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json.{Format, __}
-import play.api.libs.functional.syntax._
 
 import java.security.MessageDigest
 import java.time.{Instant, LocalDateTime, ZoneOffset}
@@ -28,14 +27,14 @@ object InvitationId {
   private def idWrites =
     (__ \ "value")
       .write[String]
-      .contramap((id: InvitationId) => id.value.toString)
+      .contramap((id: InvitationId) => id.value)
 
   private def idReads =
     (__ \ "value")
       .read[String]
       .map(x => InvitationId(x))
 
-  implicit val idFormats = Format(idReads, idWrites)
+  implicit val idFormats: Format[InvitationId] = Format(idReads, idWrites)
 
   private val pattern = "^[ABCDEFGHJKLMNOPRSTUWXYZ123456789]{13}$".r
 
@@ -106,7 +105,7 @@ private[model] object CRC10 {
   val poly = 0x233
   val initial = 0
   val xorOut = 0
-  val widthMask = (1 << bitWidth) - 1
+  val widthMask: Int = (1 << bitWidth) - 1
 
   val table: Seq[Int] = {
 

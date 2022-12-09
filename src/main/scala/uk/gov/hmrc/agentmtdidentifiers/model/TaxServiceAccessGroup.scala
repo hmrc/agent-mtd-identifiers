@@ -30,7 +30,8 @@ case class TaxServiceAccessGroup(
                         createdBy: AgentUser,
                         lastUpdatedBy: AgentUser,
                         teamMembers: Option[Set[AgentUser]],
-                        automaticUpdates: Boolean = true, // if false, new clients added to excluded clients
+                        service: String, // Nice to use Service but how to handle trusts?
+                        automaticUpdates: Boolean,
                         excludedClients: Option[Set[Client]]
                       )
 
@@ -43,13 +44,14 @@ object TaxServiceAccessGroup {
             createdBy: AgentUser,
             lastUpdatedBy: AgentUser,
             teamMembers: Option[Set[AgentUser]],
-            automaticUpdates: Boolean = true,
+            service: String,
+            automaticUpdates: Boolean = true, // if false, new clients added to excluded clients
             excludedClients: Option[Set[Client]]): TaxServiceAccessGroup = {
 
     TaxServiceAccessGroup(
       new ObjectId(), arn, groupName,
       created, lastUpdated, createdBy, lastUpdatedBy,
-      teamMembers, automaticUpdates, excludedClients)
+      teamMembers, service, automaticUpdates, excludedClients)
   }
 
   implicit val objectIdFormat: Format[ObjectId] = Format(
