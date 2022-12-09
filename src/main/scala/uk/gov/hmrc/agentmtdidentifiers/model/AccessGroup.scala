@@ -71,7 +71,7 @@ case class TaxServiceAccessGroup(
                         _id: ObjectId,
                         arn: Arn,
                         taxService: Service,
-                        groupName: String,
+                        groupName: String, // defaults to taxService
                         created: LocalDateTime,
                         lastUpdated: LocalDateTime,
                         createdBy: AgentUser,
