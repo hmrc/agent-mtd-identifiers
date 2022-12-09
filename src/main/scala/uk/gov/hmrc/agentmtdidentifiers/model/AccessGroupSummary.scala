@@ -18,7 +18,7 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json._
 
-case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Int, teamMemberCount: Int)
+case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Int, teamMemberCount: Int, isCustomGroup: Boolean)
 
 object AccessGroupSummary {
 
@@ -27,15 +27,17 @@ object AccessGroupSummary {
       accessGroup._id.toHexString,
       accessGroup.groupName,
       accessGroup.clients.fold(0)(_.size),
-      accessGroup.teamMembers.fold(0)(_.size)
+      accessGroup.teamMembers.fold(0)(_.size),
+      isCustomGroup = true
     )
 
   def convertTaxServiceGroup(accessGroup: TaxServiceAccessGroup): AccessGroupSummary =
     AccessGroupSummary(
       accessGroup._id.toHexString,
       accessGroup.groupName,
-      0, // custom groups should never have less than 1 client - safer to have explicit boolean?
-      accessGroup.teamMembers.fold(0)(_.size)
+      0, // info is obtained elsewhere, custom groups should never have less than 1 client
+      accessGroup.teamMembers.fold(0)(_.size),
+      isCustomGroup = false // could use client count but this is more explicit
     )
 
   implicit val formatAccessGroupSummary: OFormat[AccessGroupSummary] = Json.format[AccessGroupSummary]
