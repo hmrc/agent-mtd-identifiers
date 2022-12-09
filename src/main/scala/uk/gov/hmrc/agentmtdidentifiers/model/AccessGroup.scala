@@ -24,7 +24,37 @@ import java.net.{URLDecoder, URLEncoder}
 import java.time.LocalDateTime
 import scala.util.Try
 
-case class AccessGroup(
+trait AccessGroup {
+  val _id: ObjectId
+  val arn: Arn
+  val groupName: String
+  val created: LocalDateTime
+  val lastUpdated: LocalDateTime
+  val createdBy: AgentUser
+  val lastUpdatedBy: AgentUser
+  val teamMembers: Option[Set[AgentUser]]
+
+  def isCustomGroup(groupName: String): Boolean = {
+    groupName match {
+      case "VAT"
+           | "Capital Gains Tax"
+           | "Trusts and Estates"
+           | "Making Tax Digital for Income Tax" => false
+    }
+  }
+
+  def taxServiceType(groupName: String) = {
+    groupName match {
+      case "VAT" => Service.Vat
+      case "Capital Gains Tax" => Service.CapitalGains
+      case _ => None
+    }
+  }
+}
+
+
+// for client assignments with EACD
+case class CustomAccessGroup(
                         _id: ObjectId,
                         arn: Arn,
                         groupName: String,
@@ -34,33 +64,48 @@ case class AccessGroup(
                         lastUpdatedBy: AgentUser,
                         teamMembers: Option[Set[AgentUser]],
                         clients: Option[Set[Client]]
-                      )
+                      ) extends AccessGroup
+
+// managed only via Agent Services
+case class TaxServiceAccessGroup(
+                        _id: ObjectId,
+                        arn: Arn,
+                        taxService: Service,
+                        groupName: String,
+                        created: LocalDateTime,
+                        lastUpdated: LocalDateTime,
+                        createdBy: AgentUser,
+                        lastUpdatedBy: AgentUser,
+                        teamMembers: Option[Set[AgentUser]],
+                        automaticUpdates: Boolean = true, // if false, new clients added to excluded clients
+                        excludedClients: Option[Set[Client]]
+                       ) extends AccessGroup
 
 object AccessGroup {
 
-  def apply(arn: Arn,
-            groupName: String,
-            created: LocalDateTime,
-            lastUpdated: LocalDateTime,
-            createdBy: AgentUser,
-            lastUpdatedBy: AgentUser,
-            teamMembers: Option[Set[AgentUser]],
-            clients: Option[Set[Client]]): AccessGroup = {
-
-    AccessGroup(
-      new ObjectId(), arn, groupName,
-      created, lastUpdated, createdBy, lastUpdatedBy,
-      teamMembers, clients)
-  }
+  // TODO
+//  def apply(arn: Arn,
+//            groupName: String,
+//            created: LocalDateTime,
+//            lastUpdated: LocalDateTime,
+//            createdBy: AgentUser,
+//            lastUpdatedBy: AgentUser,
+//            teamMembers: Option[Set[AgentUser]],
+//            clients: Option[Set[Client]]): CustomAccessGroup = {
+//
+//    AccessGroup(
+//      new ObjectId(), arn, groupName,
+//      created, lastUpdated, createdBy, lastUpdatedBy,
+//      teamMembers)
+//  }
 
   implicit val objectIdFormat: Format[ObjectId] = Format(
     Reads[ObjectId] {
-      case s: JsString => {
+      case s: JsString =>
         val maybeOID: Try[ObjectId] = Try{new ObjectId(s.value)}
         if(maybeOID.isSuccess) JsSuccess(maybeOID.get) else {
           JsError("Expected ObjectId as JsString")
         }
-      }
       case _ => JsError()
     },
     Writes[ObjectId]((o: ObjectId) => JsString(o.toHexString))
@@ -69,21 +114,32 @@ object AccessGroup {
   implicit val formatAccessGroup: OFormat[AccessGroup] = Json.format[AccessGroup]
 }
 
-case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Int, teamMemberCount: Int)
+case class AccessGroupSummary(groupId: String, groupName: String, clientCount: Int, teamMemberCount: Int, isCustomGroup: Boolean)
 
 object AccessGroupSummary {
 
-  def convert(accessGroup: AccessGroup): AccessGroupSummary =
+  def convertCustom(accessGroup: CustomAccessGroup): AccessGroupSummary =
     AccessGroupSummary(
       accessGroup._id.toHexString,
       accessGroup.groupName,
       accessGroup.clients.fold(0)(_.size),
-      accessGroup.teamMembers.fold(0)(_.size)
+      accessGroup.teamMembers.fold(0)(_.size),
+      isCustomGroup = true
+    )
+
+  def convertTaxService(accessGroup: TaxServiceAccessGroup): AccessGroupSummary =
+    AccessGroupSummary(
+      accessGroup._id.toHexString,
+      accessGroup.groupName,
+      0, // calculate elsewhere, or use service? custom groups should never have less than 1 client
+      accessGroup.teamMembers.fold(0)(_.size),
+      isCustomGroup = false
     )
 
   implicit val formatAccessGroupSummary: OFormat[AccessGroupSummary] = Json.format[AccessGroupSummary]
 }
 
+//TODO - check if we still need this, could be removed
 case class AccessGroupSummaries(groups: Seq[AccessGroupSummary], unassignedClients: Set[Client])
 
 object AccessGroupSummaries {
