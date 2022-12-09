@@ -17,15 +17,11 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.bson.types.ObjectId
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, OFormat, Reads, Writes}
-import uk.gov.hmrc.agentmtdidentifiers.model.GroupId.{ENCODING, SPLITTER}
-
-import java.net.{URLDecoder, URLEncoder}
+import play.api.libs.json._
 import java.time.LocalDateTime
 import scala.util.Try
 
-// Custom access group
-case class AccessGroup(
+case class TaxServiceAccessGroup(
                         _id: ObjectId,
                         arn: Arn,
                         groupName: String,
@@ -34,10 +30,11 @@ case class AccessGroup(
                         createdBy: AgentUser,
                         lastUpdatedBy: AgentUser,
                         teamMembers: Option[Set[AgentUser]],
-                        clients: Option[Set[Client]]
+                        automaticUpdates: Boolean = true, // if false, new clients added to excluded clients
+                        excludedClients: Option[Set[Client]]
                       )
 
-object AccessGroup {
+object TaxServiceAccessGroup {
 
   def apply(arn: Arn,
             groupName: String,
@@ -46,12 +43,13 @@ object AccessGroup {
             createdBy: AgentUser,
             lastUpdatedBy: AgentUser,
             teamMembers: Option[Set[AgentUser]],
-            clients: Option[Set[Client]]): AccessGroup = {
+            automaticUpdates: Boolean = true,
+            excludedClients: Option[Set[Client]]): TaxServiceAccessGroup = {
 
-    AccessGroup(
+    TaxServiceAccessGroup(
       new ObjectId(), arn, groupName,
       created, lastUpdated, createdBy, lastUpdatedBy,
-      teamMembers, clients)
+      teamMembers, automaticUpdates, excludedClients)
   }
 
   implicit val objectIdFormat: Format[ObjectId] = Format(
@@ -66,40 +64,6 @@ object AccessGroup {
     Writes[ObjectId]((o: ObjectId) => JsString(o.toHexString))
   )
 
-  implicit val formatAccessGroup: OFormat[AccessGroup] = Json.format[AccessGroup]
+  implicit val formatAccessGroup: OFormat[TaxServiceAccessGroup] = Json.format[TaxServiceAccessGroup]
 }
 
-case class ClientList(assigned: Set[Client], unassigned: Set[Client])
-
-object ClientList {
-  implicit val format: OFormat[ClientList] = Json.format[ClientList]
-}
-
-case class GroupId(arn: Arn, groupName: String) {
-
-  def encode: String =
-    URLEncoder.encode(arn.value + SPLITTER + groupName, ENCODING)
-}
-
-object GroupId {
-
-  private val ENCODING = "UTF-8"
-  private val SPLITTER = "~"
-
-  def decode(gid: String): Option[GroupId] =
-    Option(gid).flatMap { gid =>
-      if (gid.contains(" ")) {
-        None
-      } else {
-        URLDecoder.decode(gid, ENCODING).split(SPLITTER) match {
-          case parts if parts.length != 2 =>
-            None
-          case parts if Arn.isValid(parts(0)) =>
-            Option(GroupId(Arn(parts(0)), parts(1).trim))
-          case _ =>
-            None
-        }
-      }
-    }
-
-}
