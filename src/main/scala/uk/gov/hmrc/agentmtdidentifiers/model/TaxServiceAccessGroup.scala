@@ -30,7 +30,7 @@ case class TaxServiceAccessGroup(
                         createdBy: AgentUser,
                         lastUpdatedBy: AgentUser,
                         teamMembers: Option[Set[AgentUser]],
-                        service: String, // Nice to use Service but how to handle trusts?
+                        service: String, // Nice to use Service but want flexibility for Trusts
                         automaticUpdates: Boolean,
                         excludedClients: Option[Set[Client]]
                       )
@@ -38,7 +38,7 @@ case class TaxServiceAccessGroup(
 object TaxServiceAccessGroup {
 
   def apply(arn: Arn,
-            groupName: String,
+            groupName: String, // could be removed if fixed
             created: LocalDateTime,
             lastUpdated: LocalDateTime,
             createdBy: AgentUser,
