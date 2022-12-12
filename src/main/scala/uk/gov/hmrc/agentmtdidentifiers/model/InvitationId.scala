@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
+import play.api.libs.functional.syntax._
+
 import play.api.libs.json.{Format, __}
 import java.security.MessageDigest
 import java.time.{Instant, LocalDateTime, ZoneOffset}
@@ -26,7 +28,7 @@ object InvitationId {
   private def idWrites =
     (__ \ "value")
       .write[String]
-      .contramap((id: InvitationId) => id.value)
+      .contramap((id: InvitationId) => id.value.toString)
 
   private def idReads =
     (__ \ "value")
