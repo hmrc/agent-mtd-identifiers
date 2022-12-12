@@ -17,7 +17,6 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json.{Format, __}
-
 import java.security.MessageDigest
 import java.time.{Instant, LocalDateTime, ZoneOffset}
 
@@ -34,7 +33,7 @@ object InvitationId {
       .read[String]
       .map(x => InvitationId(x))
 
-  implicit val idFormats: Format[InvitationId] = Format(idReads, idWrites)
+  implicit val idFormats = Format(idReads, idWrites)
 
   private val pattern = "^[ABCDEFGHJKLMNOPRSTUWXYZ123456789]{13}$".r
 
