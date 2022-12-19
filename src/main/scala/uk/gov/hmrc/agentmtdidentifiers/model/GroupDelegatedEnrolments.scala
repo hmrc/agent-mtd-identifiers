@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 /**
  * Represents client assigned to users in the ES21 APi response.
  */
-case class AssignedClient(serviceName: String, identifiers: Seq[Identifier], friendlyName: Option[String], assignedTo: String)
+case class AssignedClient(clientEnrolmentKey: String, friendlyName: Option[String], assignedTo: String)
 
 object AssignedClient {
   implicit val formatAssignedClient: OFormat[AssignedClient] = Json.format[AssignedClient]
