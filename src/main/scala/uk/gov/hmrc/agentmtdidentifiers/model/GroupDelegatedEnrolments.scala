@@ -16,23 +16,19 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import play.api.libs.json.{Format, Json}
-
-case class UserEnrolment(userId: String, enrolmentKey: String) {
-  override def toString: String = s"$userId:$enrolmentKey"
-}
-
-object UserEnrolment {
-  implicit val formats: Format[UserEnrolment] = Json.format
-}
+import play.api.libs.json.{Json, OFormat}
 
 /**
- * Represents the user/client combinations to assign and unassign in EACD.
- * @param assign combinations to assign using ES11 API
- * @param unassign combinations to unassign using ES12 API
+ * Represents client assigned to users in the ES21 APi response.
  */
-case class UserEnrolmentAssignments(assign: Set[UserEnrolment], unassign: Set[UserEnrolment], arn: Arn)
+case class AssignedClient(clientEnrolmentKey: String, friendlyName: Option[String], assignedTo: String)
 
-object UserEnrolmentAssignments {
-  implicit val formats: Format[UserEnrolmentAssignments] = Json.format
+object AssignedClient {
+  implicit val formatAssignedClient: OFormat[AssignedClient] = Json.format[AssignedClient]
+}
+
+case class GroupDelegatedEnrolments(clients: Seq[AssignedClient])
+
+object GroupDelegatedEnrolments {
+  implicit val formatGroupDelegatedEnrolments: OFormat[GroupDelegatedEnrolments] = Json.format[GroupDelegatedEnrolments]
 }

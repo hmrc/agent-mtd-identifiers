@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.joda.time.{DateTime, DateTimeZone}
-import play.api.libs.json.{Format, __}
-import play.api.libs.functional.syntax._ // Keep this
+import play.api.libs.functional.syntax._
 
+import play.api.libs.json.{Format, __}
 import java.security.MessageDigest
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 case class InvitationId(value: String)
 
@@ -44,9 +44,9 @@ object InvitationId {
     case _           => false
   }
 
-  def create(arn: String, clientId: String, serviceName: String, timestamp: DateTime = DateTime.now(DateTimeZone.UTC))(
+  def create(arn: String, clientId: String, serviceName: String, timestamp: LocalDateTime = Instant.now().atZone(ZoneOffset.UTC).toLocalDateTime)(
     implicit prefix: Char): InvitationId = {
-    val idUnhashed = s"$arn.$clientId,$serviceName-${timestamp.getMillis}"
+    val idUnhashed = s"$arn.$clientId,$serviceName-${timestamp.toInstant(ZoneOffset.UTC).toEpochMilli}"
     val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(7)
     val idChars = bytesTo5BitNums(idBytes).map(to5BitAlphaNumeric).mkString
     val idWithPrefix = s"$prefix$idChars"
@@ -106,7 +106,7 @@ private[model] object CRC10 {
   val poly = 0x233
   val initial = 0
   val xorOut = 0
-  val widthMask = (1 << bitWidth) - 1
+  val widthMask: Int = (1 << bitWidth) - 1
 
   val table: Seq[Int] = {
 

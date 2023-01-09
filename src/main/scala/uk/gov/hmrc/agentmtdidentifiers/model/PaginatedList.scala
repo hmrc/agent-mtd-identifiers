@@ -18,21 +18,22 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import play.api.libs.json.{Format, Json}
 
-case class UserEnrolment(userId: String, enrolmentKey: String) {
-  override def toString: String = s"$userId:$enrolmentKey"
+case class PaginationMetaData(
+  lastPage: Boolean,
+  firstPage: Boolean,
+  totalSize: Int,
+  totalPages: Int,
+  pageSize: Int,
+  currentPageNumber: Int,
+  currentPageSize: Int
+)
+
+case class PaginatedList[T](pageContent: Seq[T], paginationMetaData: PaginationMetaData)
+
+case object PaginationMetaData {
+  implicit val format: Format[PaginationMetaData] = Json.format[PaginationMetaData]
 }
 
-object UserEnrolment {
-  implicit val formats: Format[UserEnrolment] = Json.format
-}
-
-/**
- * Represents the user/client combinations to assign and unassign in EACD.
- * @param assign combinations to assign using ES11 API
- * @param unassign combinations to unassign using ES12 API
- */
-case class UserEnrolmentAssignments(assign: Set[UserEnrolment], unassign: Set[UserEnrolment], arn: Arn)
-
-object UserEnrolmentAssignments {
-  implicit val formats: Format[UserEnrolmentAssignments] = Json.format
+case object PaginatedList {
+  implicit def format[A](implicit format: Format[A]): Format[PaginatedList[A]] = Json.format[PaginatedList[A]]
 }
