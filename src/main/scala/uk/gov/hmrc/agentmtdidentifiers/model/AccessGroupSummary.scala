@@ -23,7 +23,7 @@ case class AccessGroupSummary(
                                groupName: String,
                                clientCount: Option[Int],
                                teamMemberCount: Int,
-                               taxService: String // if empty, custom group
+                               taxService: Option[String] = None // if empty, custom group
                              )
 
 object AccessGroupSummary {
@@ -33,8 +33,7 @@ object AccessGroupSummary {
       accessGroup._id.toHexString,
       accessGroup.groupName,
       Some(accessGroup.clients.fold(0)(_.size)),
-      accessGroup.teamMembers.fold(0)(_.size),
-      ""
+      accessGroup.teamMembers.fold(0)(_.size)
     )
 
   def convertTaxServiceGroup(accessGroup: TaxServiceAccessGroup, clientCount: Option[Int] = None): AccessGroupSummary =
@@ -43,7 +42,7 @@ object AccessGroupSummary {
       accessGroup.groupName,
       clientCount, // info not retained in group - group could be empty
       accessGroup.teamMembers.fold(0)(_.size),
-      accessGroup.service
+      Some(accessGroup.service)
     )
 
   implicit val formatAccessGroupSummary: OFormat[AccessGroupSummary] = Json.format[AccessGroupSummary]
