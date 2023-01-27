@@ -21,7 +21,7 @@ import play.api.libs.json._
 import java.time.LocalDateTime
 import scala.util.Try
 
-case class TaxServiceAccessGroup(
+case class TaxGroup(
                         _id: ObjectId,
                         arn: Arn,
                         groupName: String,
@@ -35,7 +35,7 @@ case class TaxServiceAccessGroup(
                         excludedClients: Option[Set[Client]]
                       )
 
-object TaxServiceAccessGroup {
+object TaxGroup {
 
   def apply(arn: Arn,
             groupName: String, // could be removed if fixed
@@ -46,9 +46,9 @@ object TaxServiceAccessGroup {
             teamMembers: Option[Set[AgentUser]],
             service: String,
             automaticUpdates: Boolean = true, // if false, new clients added to excluded clients
-            excludedClients: Option[Set[Client]]): TaxServiceAccessGroup = {
+            excludedClients: Option[Set[Client]]): TaxGroup = {
 
-    TaxServiceAccessGroup(
+    TaxGroup(
       new ObjectId(), arn, groupName,
       created, lastUpdated, createdBy, lastUpdatedBy,
       teamMembers, service, automaticUpdates, excludedClients)
@@ -66,7 +66,7 @@ object TaxServiceAccessGroup {
     Writes[ObjectId]((o: ObjectId) => JsString(o.toHexString))
   )
 
-  implicit val formatAccessGroup: OFormat[TaxServiceAccessGroup] = Json.format[TaxServiceAccessGroup]
+  implicit val formatAccessGroup: OFormat[TaxGroup] = Json.format[TaxGroup]
 }
 
 

@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 import scala.util.Try
 
 // Custom access group
-case class AccessGroup(
+case class CustomGroup(
                         _id: ObjectId,
                         arn: Arn,
                         groupName: String,
@@ -37,7 +37,7 @@ case class AccessGroup(
                         clients: Option[Set[Client]]
                       )
 
-object AccessGroup {
+object CustomGroup {
 
   def apply(arn: Arn,
             groupName: String,
@@ -46,9 +46,9 @@ object AccessGroup {
             createdBy: AgentUser,
             lastUpdatedBy: AgentUser,
             teamMembers: Option[Set[AgentUser]],
-            clients: Option[Set[Client]]): AccessGroup = {
+            clients: Option[Set[Client]]): CustomGroup = {
 
-    AccessGroup(
+    CustomGroup(
       new ObjectId(), arn, groupName,
       created, lastUpdated, createdBy, lastUpdatedBy,
       teamMembers, clients)
@@ -66,7 +66,7 @@ object AccessGroup {
     Writes[ObjectId]((o: ObjectId) => JsString(o.toHexString))
   )
 
-  implicit val formatAccessGroup: OFormat[AccessGroup] = Json.format[AccessGroup]
+  implicit val formatAccessGroup: OFormat[CustomGroup] = Json.format[CustomGroup]
 }
 
 case class ClientList(assigned: Set[Client], unassigned: Set[Client])

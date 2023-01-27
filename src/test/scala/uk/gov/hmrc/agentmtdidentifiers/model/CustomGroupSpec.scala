@@ -22,7 +22,7 @@ import play.api.libs.json.{JsSuccess, Json}
 
 import java.time.LocalDateTime
 
-class AccessGroupSpec extends FlatSpec with Matchers {
+class CustomGroupSpec extends FlatSpec with Matchers {
 
     "AccessGroup" should "serialise to JSON and deserialize from string" in {
       val arn: Arn = Arn("KARN1234567")
@@ -39,8 +39,8 @@ class AccessGroupSpec extends FlatSpec with Matchers {
 
       val id = new ObjectId()
 
-      val accessGroup: AccessGroup =
-        AccessGroup(
+      val accessGroup: CustomGroup =
+        CustomGroup(
           id,
           arn,
           groupName,
@@ -56,7 +56,7 @@ class AccessGroupSpec extends FlatSpec with Matchers {
         s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"},{"enrolmentKey":"HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345","friendlyName":"Frank Wright"},{"enrolmentKey":"HMRC-CGT-PD~CgtRef~XMCGTP123456789","friendlyName":"George Candy"}]}""".stripMargin
 
       Json.toJson(accessGroup).toString shouldBe jsonString
-      Json.fromJson[AccessGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
+      Json.fromJson[CustomGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
     }
 
 
