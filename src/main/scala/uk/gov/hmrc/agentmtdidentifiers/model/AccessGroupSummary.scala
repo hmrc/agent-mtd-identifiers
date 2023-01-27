@@ -28,19 +28,38 @@ case class AccessGroupSummary(
 
 object AccessGroupSummary {
 
-  def convertCustomGroup(accessGroup: AccessGroup): AccessGroupSummary =
+  def fromAccessGroup(accessGroup: AccessGroup): AccessGroupSummary =
     AccessGroupSummary(
       accessGroup._id.toHexString,
       accessGroup.groupName,
       Some(accessGroup.clients.fold(0)(_.size)),
-      accessGroup.teamMembers.fold(0)(_.size)
+      accessGroup.teamMembers.fold(0)(_.size),
+      None
     )
 
-  def convertTaxServiceGroup(accessGroup: TaxServiceAccessGroup, clientCount: Option[Int] = None): AccessGroupSummary =
+  def fromAccessGroup(accessGroup: AccessGroup, clientCount: Int): AccessGroupSummary =
     AccessGroupSummary(
       accessGroup._id.toHexString,
       accessGroup.groupName,
-      clientCount, // info not retained in group - group could be empty
+      Some(clientCount),
+      accessGroup.teamMembers.fold(0)(_.size),
+      None
+    )
+
+  def fromAccessGroup(accessGroup: TaxServiceAccessGroup): AccessGroupSummary =
+    AccessGroupSummary(
+      accessGroup._id.toHexString,
+      accessGroup.groupName,
+      None, // info not retained in group - group could be empty
+      accessGroup.teamMembers.fold(0)(_.size),
+      Some(accessGroup.service)
+    )
+
+  def fromAccessGroup(accessGroup: TaxServiceAccessGroup, clientCount: Int): AccessGroupSummary =
+    AccessGroupSummary(
+      accessGroup._id.toHexString,
+      accessGroup.groupName,
+      Some(clientCount), // info not retained in group - group could be empty
       accessGroup.teamMembers.fold(0)(_.size),
       Some(accessGroup.service)
     )
