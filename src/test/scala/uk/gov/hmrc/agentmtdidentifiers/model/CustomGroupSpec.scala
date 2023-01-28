@@ -39,7 +39,7 @@ class CustomGroupSpec extends FlatSpec with Matchers {
 
       val id = new ObjectId()
 
-      val accessGroup: CustomGroup =
+      val customGroup: CustomGroup =
         CustomGroup(
           id,
           arn,
@@ -52,12 +52,15 @@ class CustomGroupSpec extends FlatSpec with Matchers {
           Some(Set(client1, client2, client3))
         )
 
+      customGroup.isInstanceOf[AccessGroup] shouldBe true
+
       val jsonString =
         s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"},{"enrolmentKey":"HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345","friendlyName":"Frank Wright"},{"enrolmentKey":"HMRC-CGT-PD~CgtRef~XMCGTP123456789","friendlyName":"George Candy"}]}""".stripMargin
 
-      Json.toJson(accessGroup).toString shouldBe jsonString
-      Json.fromJson[CustomGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
+      Json.toJson(customGroup).toString shouldBe jsonString
+      Json.fromJson[CustomGroup](Json.parse(jsonString)) shouldBe JsSuccess(customGroup)
     }
+
 
 
 }
