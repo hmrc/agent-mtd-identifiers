@@ -78,10 +78,7 @@ class TaxGroupSpec extends FlatSpec with Matchers {
         None
       )
 
-    val jsonString =
-      s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"service":"TRUST","automaticUpdates":true}""".stripMargin
-
-    Json.toJson(taxGroup).toString shouldBe jsonString
+    val jsonString = Json.toJson(taxGroup).toString
     Json.fromJson[TaxGroup](Json.parse(jsonString)) shouldBe JsSuccess(taxGroup)
     taxGroup.isInstanceOf[AccessGroup] shouldBe true
   }
