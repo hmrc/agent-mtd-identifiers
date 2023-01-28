@@ -22,18 +22,18 @@ import java.time.LocalDateTime
 import scala.util.Try
 
 case class TaxGroup(
-                        _id: ObjectId,
-                        arn: Arn,
-                        groupName: String,
-                        created: LocalDateTime,
-                        lastUpdated: LocalDateTime,
-                        createdBy: AgentUser,
-                        lastUpdatedBy: AgentUser,
-                        teamMembers: Option[Set[AgentUser]],
-                        service: String, // Nice to use Service but want flexibility for Trusts
-                        automaticUpdates: Boolean,
-                        excludedClients: Option[Set[Client]]
-                      )
+                      _id: ObjectId,
+                      arn: Arn,
+                      groupName: String,
+                      created: LocalDateTime,
+                      lastUpdated: LocalDateTime,
+                      createdBy: AgentUser,
+                      lastUpdatedBy: AgentUser,
+                      teamMembers: Option[Set[AgentUser]],
+                      service: String, // Nice to use Service but want flexibility for Trusts
+                      automaticUpdates: Boolean,
+                      excludedClients: Option[Set[Client]]
+                      ) extends AccessGroup
 
 object TaxGroup {
 

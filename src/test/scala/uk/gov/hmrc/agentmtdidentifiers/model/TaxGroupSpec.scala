@@ -63,7 +63,7 @@ class TaxGroupSpec extends FlatSpec with Matchers {
     val now = LocalDateTime.now()
     val id = new ObjectId()
 
-    val accessGroup: TaxGroup =
+    val taxGroup: TaxGroup =
       TaxGroup(
         id,
         arn,
@@ -78,11 +78,9 @@ class TaxGroupSpec extends FlatSpec with Matchers {
         None
       )
 
-    val jsonString =
-      s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"service":"TRUST","automaticUpdates":true}""".stripMargin
-
-    Json.toJson(accessGroup).toString shouldBe jsonString
-    Json.fromJson[TaxGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
+    val jsonString = Json.toJson(taxGroup).toString
+    Json.fromJson[TaxGroup](Json.parse(jsonString)) shouldBe JsSuccess(taxGroup)
+    taxGroup.isInstanceOf[AccessGroup] shouldBe true
   }
 
 

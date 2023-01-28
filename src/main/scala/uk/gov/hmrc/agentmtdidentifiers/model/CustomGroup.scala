@@ -17,12 +17,23 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.bson.types.ObjectId
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, OFormat, Reads, Writes}
+import play.api.libs.json._
 import uk.gov.hmrc.agentmtdidentifiers.model.GroupId.{ENCODING, SPLITTER}
 
 import java.net.{URLDecoder, URLEncoder}
 import java.time.LocalDateTime
 import scala.util.Try
+
+trait AccessGroup{
+  def _id: ObjectId
+  def arn: Arn
+  def groupName: String
+  def created: LocalDateTime
+  def lastUpdated: LocalDateTime
+  def createdBy: AgentUser
+  def lastUpdatedBy: AgentUser
+  def teamMembers: Option[Set[AgentUser]]
+}
 
 // Custom access group
 case class CustomGroup(
@@ -35,7 +46,7 @@ case class CustomGroup(
                         lastUpdatedBy: AgentUser,
                         teamMembers: Option[Set[AgentUser]],
                         clients: Option[Set[Client]]
-                      )
+                      ) extends AccessGroup
 
 object CustomGroup {
 
@@ -57,8 +68,10 @@ object CustomGroup {
   implicit val objectIdFormat: Format[ObjectId] = Format(
     Reads[ObjectId] {
       case s: JsString =>
-        val maybeOID: Try[ObjectId] = Try{new ObjectId(s.value)}
-        if(maybeOID.isSuccess) JsSuccess(maybeOID.get) else {
+        val maybeOID: Try[ObjectId] = Try {
+          new ObjectId(s.value)
+        }
+        if (maybeOID.isSuccess) JsSuccess(maybeOID.get) else {
           JsError("Expected ObjectId as JsString")
         }
       case _ => JsError()
