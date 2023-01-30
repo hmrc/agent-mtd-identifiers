@@ -24,43 +24,66 @@ import java.time.LocalDateTime
 
 class CustomGroupSpec extends FlatSpec with Matchers {
 
-    "AccessGroup" should "serialise to JSON and deserialize from string" in {
-      val arn: Arn = Arn("KARN1234567")
-      val groupName = "some group"
-      val agent: AgentUser = AgentUser("userId", "userName")
-      val user1: AgentUser = AgentUser("user1", "User 1")
-      val user2: AgentUser = AgentUser("user2", "User 2")
+  val arn: Arn = Arn("KARN1234567")
+  val groupName = "some group"
+  val agent: AgentUser = AgentUser("userId", "userName")
+  val user1: AgentUser = AgentUser("user1", "User 1")
+  val user2: AgentUser = AgentUser("user2", "User 2")
 
-      val client1: Client = Client("HMRC-MTD-VAT~VRN~101747641", "John Innes")
-      val client2: Client = Client("HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345", "Frank Wright")
-      val client3: Client = Client("HMRC-CGT-PD~CgtRef~XMCGTP123456789", "George Candy")
+  val client1: Client = Client("HMRC-MTD-VAT~VRN~101747641", "John Innes")
+  val client2: Client = Client("HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345", "Frank Wright")
+  val client3: Client = Client("HMRC-CGT-PD~CgtRef~XMCGTP123456789", "George Candy")
 
-      val now = LocalDateTime.now()
+  val now = LocalDateTime.now()
+  val id = new ObjectId()
 
-      val id = new ObjectId()
+  "AccessGroup" should "serialise to JSON and deserialize from string" in {
 
-      val customGroup: CustomGroup =
-        CustomGroup(
-          id,
-          arn,
-          groupName,
-          now,
-          now,
-          agent,
-          agent,
-          Some(Set(agent, user1, user2)),
-          Some(Set(client1, client2, client3))
-        )
+    val customGroup: CustomGroup =
+      CustomGroup(
+        id,
+        arn,
+        groupName,
+        now,
+        now,
+        agent,
+        agent,
+        Some(Set(agent, user1, user2)),
+        Some(Set(client1, client2, client3))
+      )
 
-      customGroup.isInstanceOf[AccessGroup] shouldBe true
+    customGroup.isInstanceOf[AccessGroup] shouldBe true
 
-      val jsonString =
-        s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"},{"enrolmentKey":"HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345","friendlyName":"Frank Wright"},{"enrolmentKey":"HMRC-CGT-PD~CgtRef~XMCGTP123456789","friendlyName":"George Candy"}]}""".stripMargin
+    val jsonString =
+      s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"},{"enrolmentKey":"HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345","friendlyName":"Frank Wright"},{"enrolmentKey":"HMRC-CGT-PD~CgtRef~XMCGTP123456789","friendlyName":"George Candy"}]}""".stripMargin
 
-      Json.toJson(customGroup).toString shouldBe jsonString
-      Json.fromJson[CustomGroup](Json.parse(jsonString)) shouldBe JsSuccess(customGroup)
-    }
+    Json.toJson(customGroup).toString shouldBe jsonString
+    Json.fromJson[CustomGroup](Json.parse(jsonString)) shouldBe JsSuccess(customGroup)
+  }
 
+  "Creating a group summary from a custom group" should "work properly" in {
 
+    val customGroup: CustomGroup =
+      CustomGroup(
+        id,
+        arn,
+        groupName,
+        now,
+        now,
+        agent,
+        agent,
+        Some(Set(agent, user1)),
+        Some(Set(client1, client2, client3))
+      )
+
+    val groupSummary = GroupSummary.fromAccessGroup(customGroup)
+    groupSummary.taxService shouldBe None
+    groupSummary.groupId shouldBe id.toString
+    groupSummary.isTaxGroup() shouldBe false
+    groupSummary.clientCount.get shouldBe 3
+    groupSummary.groupName shouldBe groupName
+    groupSummary.teamMemberCount shouldBe 2
+
+  }
 
 }
