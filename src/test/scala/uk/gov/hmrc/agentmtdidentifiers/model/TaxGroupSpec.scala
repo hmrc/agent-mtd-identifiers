@@ -31,37 +31,38 @@ class TaxGroupSpec extends FlatSpec with Matchers {
   val user2: AgentUser = AgentUser("user2", "User 2")
   val client1: Client = Client("HMRC-MTD-VAT~VRN~101747641", "John Innes")
 
-    "TaxServiceAccessGroup" should "serialise to JSON and deserialize from string" in {
-      val service: String = "HMRC-MTD-VAT"
-      val now = LocalDateTime.now()
-      val id = new ObjectId()
+  val id = new ObjectId()
+  val now = LocalDateTime.now()
 
-      val accessGroup: TaxGroup =
-        TaxGroup(
-          id,
-          arn,
-          groupName,
-          now,
-          now,
-          agent,
-          agent,
-          Some(Set(agent, user1, user2)),
-          service,
-          automaticUpdates = false,
-          Some(Set(client1))
-        )
+  "TaxServiceAccessGroup" should "serialise to JSON and deserialize from string" in {
+    val service: String = "HMRC-MTD-VAT"
+    val now = LocalDateTime.now()
 
-      val jsonString =
-        s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"service":"HMRC-MTD-VAT","automaticUpdates":false,"excludedClients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"}]}""".stripMargin
+    val accessGroup: TaxGroup =
+      TaxGroup(
+        id,
+        arn,
+        groupName,
+        now,
+        now,
+        agent,
+        agent,
+        Some(Set(agent, user1, user2)),
+        service,
+        automaticUpdates = false,
+        Some(Set(client1))
+      )
 
-      Json.toJson(accessGroup).toString shouldBe jsonString
-      Json.fromJson[TaxGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
-    }
+    val jsonString =
+      s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"service":"HMRC-MTD-VAT","automaticUpdates":false,"excludedClients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"}]}""".stripMargin
+
+    Json.toJson(accessGroup).toString shouldBe jsonString
+    Json.fromJson[TaxGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
+  }
 
   "TaxServiceAccessGroup for trusts" should "serialise to JSON and deserialize from string" in {
     val service: String = "TRUST"
-    val now = LocalDateTime.now()
-    val id = new ObjectId()
+
 
     val taxGroup: TaxGroup =
       TaxGroup(
@@ -83,6 +84,33 @@ class TaxGroupSpec extends FlatSpec with Matchers {
     taxGroup.isInstanceOf[AccessGroup] shouldBe true
   }
 
+  "Creating a group summary from a tax group" should "work properly" in {
+    val service: String = "TRUST"
+
+    val taxGroup: TaxGroup =
+      TaxGroup(
+        id,
+        arn,
+        groupName,
+        now,
+        now,
+        agent,
+        agent,
+        Some(Set(agent, user1, user2)),
+        service = service,
+        false,
+        None
+      )
+
+    val groupSummary = GroupSummary.fromAccessGroup(taxGroup)
+    groupSummary.taxService shouldBe Some(service)
+    groupSummary.groupId shouldBe id.toString
+    groupSummary.isTaxGroup() shouldBe true
+    groupSummary.clientCount shouldBe None
+    groupSummary.groupName shouldBe groupName
+    groupSummary.teamMemberCount shouldBe 3
+
+  }
 
 
 }

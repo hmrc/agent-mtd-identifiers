@@ -24,12 +24,18 @@ case class GroupSummary(
                          clientCount: Option[Int],
                          teamMemberCount: Int,
                          taxService: Option[String] = None // if empty, custom group
-                       ){
+                       ) {
   def isTaxGroup(): Boolean = taxService.isDefined
 }
 
 object GroupSummary {
 
+
+  def fromAccessGroup(accessGroup: AccessGroup): GroupSummary =
+    if (accessGroup.isInstanceOf[TaxGroup])
+      fromAccessGroup(accessGroup.asInstanceOf[TaxGroup])
+    else
+      fromAccessGroup(accessGroup.asInstanceOf[CustomGroup])
 
   def fromAccessGroup(accessGroup: CustomGroup): GroupSummary =
     GroupSummary(
