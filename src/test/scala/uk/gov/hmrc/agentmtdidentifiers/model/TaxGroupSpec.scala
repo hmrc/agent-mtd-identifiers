@@ -109,6 +109,7 @@ class TaxGroupSpec extends FlatSpec with Matchers {
     groupSummary.clientCount shouldBe None
     groupSummary.groupName shouldBe groupName
     groupSummary.teamMemberCount shouldBe 3
+    groupSummary.groupType shouldBe "tax"
 
   }
 

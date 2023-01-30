@@ -83,6 +83,7 @@ class CustomGroupSpec extends FlatSpec with Matchers {
     groupSummary.clientCount.get shouldBe 3
     groupSummary.groupName shouldBe groupName
     groupSummary.teamMemberCount shouldBe 2
+    groupSummary.groupType shouldBe "custom"
 
   }
 
