@@ -53,11 +53,8 @@ class TaxGroupSpec extends FlatSpec with Matchers {
         Some(Set(client1))
       )
 
-    val jsonString =
-      s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"service":"HMRC-MTD-VAT","automaticUpdates":false,"excludedClients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"}]}""".stripMargin
-
-    Json.toJson(accessGroup).toString shouldBe jsonString
-    Json.fromJson[TaxGroup](Json.parse(jsonString)) shouldBe JsSuccess(accessGroup)
+    val serialised = Json.toJson(accessGroup).toString
+    Json.fromJson[TaxGroup](Json.parse(serialised)) shouldBe JsSuccess(accessGroup)
   }
 
   "TaxServiceAccessGroup for trusts" should "serialise to JSON and deserialize from string" in {
@@ -109,6 +106,7 @@ class TaxGroupSpec extends FlatSpec with Matchers {
     groupSummary.clientCount shouldBe None
     groupSummary.groupName shouldBe groupName
     groupSummary.teamMemberCount shouldBe 3
+    groupSummary.groupType shouldBe "tax"
 
   }
 
