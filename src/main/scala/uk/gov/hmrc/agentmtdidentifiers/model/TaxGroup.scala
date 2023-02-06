@@ -38,7 +38,7 @@ case class TaxGroup(
 object TaxGroup {
 
   def apply(arn: Arn,
-            groupName: String, // could be removed if fixed
+            groupName: String,
             created: LocalDateTime,
             lastUpdated: LocalDateTime,
             createdBy: AgentUser,
