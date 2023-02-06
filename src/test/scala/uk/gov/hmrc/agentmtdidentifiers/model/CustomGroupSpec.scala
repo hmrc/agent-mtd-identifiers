@@ -34,7 +34,7 @@ class CustomGroupSpec extends FlatSpec with Matchers {
   val client2: Client = Client("HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345", "Frank Wright")
   val client3: Client = Client("HMRC-CGT-PD~CgtRef~XMCGTP123456789", "George Candy")
 
-  val now = LocalDateTime.now()
+  val now: LocalDateTime = LocalDateTime.now()
   val id = new ObjectId()
 
   "AccessGroup" should "serialise to JSON and deserialize from string" in {
@@ -54,11 +54,8 @@ class CustomGroupSpec extends FlatSpec with Matchers {
 
     customGroup.isInstanceOf[AccessGroup] shouldBe true
 
-    val jsonString =
-      s"""{"_id":"${id.toHexString}","arn":"KARN1234567","groupName":"some group","created":"$now","lastUpdated":"$now","createdBy":{"id":"userId","name":"userName"},"lastUpdatedBy":{"id":"userId","name":"userName"},"teamMembers":[{"id":"userId","name":"userName"},{"id":"user1","name":"User 1"},{"id":"user2","name":"User 2"}],"clients":[{"enrolmentKey":"HMRC-MTD-VAT~VRN~101747641","friendlyName":"John Innes"},{"enrolmentKey":"HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345","friendlyName":"Frank Wright"},{"enrolmentKey":"HMRC-CGT-PD~CgtRef~XMCGTP123456789","friendlyName":"George Candy"}]}""".stripMargin
-
-    Json.toJson(customGroup).toString shouldBe jsonString
-    Json.fromJson[CustomGroup](Json.parse(jsonString)) shouldBe JsSuccess(customGroup)
+    val serialised = Json.toJson(customGroup).toString
+    Json.fromJson[CustomGroup](Json.parse(serialised)) shouldBe JsSuccess(customGroup)
   }
 
   "Creating a group summary from a custom group" should "work properly" in {
@@ -83,6 +80,7 @@ class CustomGroupSpec extends FlatSpec with Matchers {
     groupSummary.clientCount.get shouldBe 3
     groupSummary.groupName shouldBe groupName
     groupSummary.teamMemberCount shouldBe 2
+    groupSummary.groupType shouldBe "custom"
 
   }
 

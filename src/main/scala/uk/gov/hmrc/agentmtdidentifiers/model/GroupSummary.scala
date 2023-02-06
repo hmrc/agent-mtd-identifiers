@@ -25,7 +25,9 @@ case class GroupSummary(
                          teamMemberCount: Int,
                          taxService: Option[String] = None // if empty, custom group
                        ) {
-  def isTaxGroup: Boolean = taxService.isDefined
+  def isTaxGroup(): Boolean = taxService.isDefined
+  def isCustomGroup(): Boolean = taxService.isEmpty
+  def groupType: String = if(isTaxGroup()) "tax" else "custom" //used for url context paths
 }
 
 object GroupSummary {
