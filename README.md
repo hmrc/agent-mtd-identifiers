@@ -5,6 +5,8 @@
 
 Micro-library for typing and validating UK tax identifiers within the Agents domain.
 
+Now also includes support for access groups (aka granular permissions) in the Agent Services Account
+
 #### Identifier Types
 
 Types are provided for many common tax identifiers, such as:
@@ -26,6 +28,28 @@ Types are provided for many common tax identifiers, such as:
 Arn.isValid("TARN0000001") // true
 Arn.isValid("TABC0000001") // false
 ```
+
+#### Access group Types
+
+There are two core types of access groups:
+* Custom group (a list of clients & team members)
+* Tax group (a tax service key & a list of team members, and a list of excluded clients)
+
+Both group types extend the common trait and can also be converted into a slimmed down [Group Summary](src/main/scala/uk/gov/hmrc/agentmtdidentifiers/model/GroupSummary.scala)
+
+```scala
+trait AccessGroup {
+  def _id: ObjectId
+  def arn: Arn
+  def groupName: String
+  def created: LocalDateTime
+  def lastUpdated: LocalDateTime
+  def createdBy: AgentUser
+  def lastUpdatedBy: AgentUser
+  def teamMembers: Option[Set[AgentUser]]
+}
+```
+
 
 ```
 ### Installing

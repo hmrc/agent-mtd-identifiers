@@ -32,7 +32,7 @@ class TaxGroupSpec extends FlatSpec with Matchers {
   val client1: Client = Client("HMRC-MTD-VAT~VRN~101747641", "John Innes")
 
   val id = new ObjectId()
-  val now = LocalDateTime.now()
+  val now: LocalDateTime = LocalDateTime.now()
 
   "TaxServiceAccessGroup" should "serialise to JSON and deserialize from string" in {
     val service: String = "HMRC-MTD-VAT"
@@ -95,7 +95,7 @@ class TaxGroupSpec extends FlatSpec with Matchers {
         agent,
         Some(Set(agent, user1, user2)),
         service = service,
-        false,
+        automaticUpdates = false,
         None
       )
 

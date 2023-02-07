@@ -34,7 +34,7 @@ class CustomGroupSpec extends FlatSpec with Matchers {
   val client2: Client = Client("HMRC-PPT-ORG~EtmpRegistrationNumber~XAPPT0000012345", "Frank Wright")
   val client3: Client = Client("HMRC-CGT-PD~CgtRef~XMCGTP123456789", "George Candy")
 
-  val now = LocalDateTime.now()
+  val now: LocalDateTime = LocalDateTime.now()
   val id = new ObjectId()
 
   "AccessGroup" should "serialise to JSON and deserialize from string" in {

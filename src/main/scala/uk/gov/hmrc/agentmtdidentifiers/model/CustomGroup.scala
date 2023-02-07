@@ -35,7 +35,6 @@ trait AccessGroup{
   def teamMembers: Option[Set[AgentUser]]
 }
 
-// Custom access group
 case class CustomGroup(
                         _id: ObjectId,
                         arn: Arn,
