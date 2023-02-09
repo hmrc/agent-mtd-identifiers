@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, JsValue, Json}
 
 case class PaginationMetaData(
   lastPage: Boolean,
@@ -25,7 +25,8 @@ case class PaginationMetaData(
   totalPages: Int,
   pageSize: Int,
   currentPageNumber: Int,
-  currentPageSize: Int
+  currentPageSize: Int,
+  extra: Option[Map[String, JsValue]] = None
 )
 
 case class PaginatedList[T](pageContent: Seq[T], paginationMetaData: PaginationMetaData)
