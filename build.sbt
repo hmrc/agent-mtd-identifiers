@@ -13,35 +13,25 @@ lazy val scoverageSettings = {
   )
 }
 
-val allDependencies = PlayCrossCompilation.dependencies(
-  shared = Seq(
+val allDependencies = Seq(
     "org.mongodb" % "bson" % "4.6.1",
     "org.scalatest" %% "scalatest" % "3.0.6" % Test,
     "org.pegdown" % "pegdown" % "1.6.0" % Test,
-    "org.scalacheck" %% "scalacheck" % "1.14.0" % Test
-  ),
-  play26 = Seq(
-    "com.typesafe.play" %% "play-json" % "2.6.13",
-    "uk.gov.hmrc" %% "domain" % "6.0.0-play-26"
-  ),
-  play27 = Seq(
-    "com.typesafe.play" %% "play-json" % "2.7.4",
-    "uk.gov.hmrc" %% "domain" % "6.0.0-play-27"
-  ),
-  play28 = Seq(
+    "org.scalacheck" %% "scalacheck" % "1.14.0" % Test,
     "com.typesafe.play" %% "play-json" % "2.9.2",
     "uk.gov.hmrc" %% "domain" % "8.1.0-play-28"
   )
-)
 
+val scala2_12 = "2.12.15"
+val scala2_13 = "2.13.8"
 
 lazy val root = (project in file("."))
   .settings(
     name := "agent-mtd-identifiers",
     organization := "uk.gov.hmrc",
-    scalaVersion := "2.12.15",
-    crossScalaVersions := List("2.12.15"),
-    majorVersion := 0,
+    scalaVersion := scala2_12,
+    crossScalaVersions := List(scala2_12, scala2_13),
+    majorVersion := 1,
     isPublicArtefact := true,
     scoverageSettings,
     resolvers ++= Seq(
@@ -49,5 +39,5 @@ lazy val root = (project in file("."))
     ),
     libraryDependencies ++= allDependencies
   )
-  .settings(PlayCrossCompilation.playCrossCompilationSettings)
+
 
