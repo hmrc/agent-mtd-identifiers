@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.agentmtdidentifiers.model.Service.{HMRCCGTPD, HMRCMTDIT}
 
-class SuspensionDetailsSpec extends WordSpec with Matchers {
+class SuspensionDetailsSpec extends AnyWordSpec with Matchers {
 
   val suspensionStatusTrue = true
   val inputRegimes = Set("aRegime", "bRegime")

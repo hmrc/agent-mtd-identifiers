@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class UrnSpec extends FlatSpec with Matchers {
+class UrnSpec extends AnyFlatSpec with Matchers {
 
   it should "be true for a valid URN" in {
     Urn.isValid("XXTRUST80000001") shouldBe true

@@ -16,19 +16,20 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalacheck._
+import org.scalatest.Inspectors.forAll
 
-class MtdItIdSpec extends FlatSpec with Matchers with ScalaCheckPropertyChecks {
+class MtdItIdSpec extends AnyFlatSpec with Matchers {
 
-  val permittedChars = Gen.oneOf("abcdefghijklmnoqprstuvwxyzABCDEFGHIJKLMNOQPRSTUVWXYZ0123456789")
-  val validMtdItId = Gen.listOfN(15, permittedChars).map(_.toArray).map(new String(_))
+  val permittedChars: Gen[Char] = Gen.oneOf("abcdefghijklmnoqprstuvwxyzABCDEFGHIJKLMNOQPRSTUVWXYZ0123456789")
+  val validMtdItId: Gen[String] = Gen.listOfN(15, permittedChars).map(_.toArray).map(new String(_))
 
   it should "be true for a valid MTDITID" in {
     forAll(validMtdItId) { mtditid =>
       MtdItId.isValid(mtditid) shouldBe true
-    }
+    } //TODO
   }
 
   it should "be false when it has more than 15 digits" in {

@@ -17,12 +17,13 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.bson.types.ObjectId
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsSuccess, Json}
 
 import java.time.LocalDateTime
 
-class TaxGroupSpec extends FlatSpec with Matchers {
+class TaxGroupSpec extends AnyFlatSpec with Matchers {
 
   val arn: Arn = Arn("KARN1234567")
   val groupName = "some group"

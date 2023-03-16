@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.time.LocalDateTime
 
-class OptinRecordSpec extends WordSpecLike with Matchers {
+class OptinRecordSpec extends AnyWordSpecLike with Matchers {
 
   s"OptinRecord status" when {
 

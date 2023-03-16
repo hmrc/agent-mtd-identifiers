@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.utils
 
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.agentmtdidentifiers.model.Client
 
-class PaginatedListBuilderSpec extends WordSpecLike with Matchers {
+class PaginatedListBuilderSpec extends AnyWordSpecLike with Matchers {
 
   val clients: Seq[Client] = (1 to 29) map (index => Client(s"EK$index", s"name$index"))
   val pageSize = 10

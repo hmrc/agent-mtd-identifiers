@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-class GroupIdSpec extends WordSpecLike with Matchers {
+class GroupIdSpec extends AnyWordSpecLike with Matchers {
 
   val validArn = "KARN0762398"
   val invalidArn = "KARN0101010"

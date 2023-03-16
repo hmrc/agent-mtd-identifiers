@@ -15,9 +15,9 @@ lazy val scoverageSettings = {
 
 val allDependencies = Seq(
     "org.mongodb" % "bson" % "4.6.1",
-    "org.scalatest" %% "scalatest" % "3.0.6" % Test,
+    "org.scalatest" %% "scalatest" % "3.2.15" % Test,
     "org.pegdown" % "pegdown" % "1.6.0" % Test,
-    "org.scalacheck" %% "scalacheck" % "1.14.0" % Test,
+    "org.scalacheck" %% "scalacheck" % "1.17.0" % Test,
     "com.typesafe.play" %% "play-json" % "2.9.2",
     "uk.gov.hmrc" %% "domain" % "8.1.0-play-28"
   )

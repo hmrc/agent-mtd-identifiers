@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class EoriSpec extends FlatSpec with Matchers {
+class EoriSpec extends AnyFlatSpec with Matchers {
 
   it should "be true for a valid EORI" in {
     Eori.isValid("A0000000000000a") shouldBe true
