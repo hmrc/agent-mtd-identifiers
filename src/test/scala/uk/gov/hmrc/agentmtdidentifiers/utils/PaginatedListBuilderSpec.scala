@@ -17,7 +17,7 @@
 package uk.gov.hmrc.agentmtdidentifiers.utils
 
 import org.scalatest.{Matchers, WordSpecLike}
-import uk.gov.hmrc.agentmtdidentifiers.model.Client
+import uk.gov.hmrc.agents.accessgroups.Client
 
 class PaginatedListBuilderSpec extends WordSpecLike with Matchers {
 

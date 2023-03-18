@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentmtdidentifiers.model
+package uk.gov.hmrc.agents.accessgroups.optin
 
 import org.scalatest.{Matchers, WordSpecLike}
+import uk.gov.hmrc.agentmtdidentifiers.model.Arn
+import uk.gov.hmrc.agents.accessgroups.AgentUser
 
 import java.time.LocalDateTime
 

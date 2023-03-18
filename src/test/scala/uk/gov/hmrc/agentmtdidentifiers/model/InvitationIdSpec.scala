@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets
 import org.scalatest.{FlatSpec, Matchers}
 import uk.gov.hmrc.agentmtdidentifiers.model.InvitationId._
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 class InvitationIdSpec extends FlatSpec with Matchers {
   val invWithoutPrefix = (prefix: Char) =>
