@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentmtdidentifiers.model
+package uk.gov.hmrc.agents.accessgroups
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-case class Client(enrolmentKey: String, friendlyName: String)
+case class AgentUser(id: String, name: String)
 
-object Client {
-  implicit val format: Format[Client] = Json.format[Client]
-
-  def fromEnrolment(enrolment: Enrolment): Client = Client(EnrolmentKey.enrolmentKeys(enrolment).head, enrolment.friendlyName)
+object AgentUser {
+  implicit val format: OFormat[AgentUser] = Json.format[AgentUser]
 }

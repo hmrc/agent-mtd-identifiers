@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentmtdidentifiers.model
+package uk.gov.hmrc.agents.accessgroups.optin
 
 import play.api.libs.json._
+import uk.gov.hmrc.agentmtdidentifiers.model.Arn
+import uk.gov.hmrc.agents.accessgroups.AgentUser
 
 import java.time.LocalDateTime
 
@@ -91,13 +93,13 @@ case class OptinRecord(arn: Arn, history: List[OptinEvent]) {
 
 object OptinRecord {
 
-  implicit val readsOptinRecord: Reads[OptinRecord] = Json.reads[OptinRecord]
+  implicit val reads: Reads[OptinRecord] = Json.reads[OptinRecord]
 
-  implicit val writesOptinRecord: Writes[OptinRecord] = (optinRecord: OptinRecord) => Json.obj(fields =
+  implicit val writes: Writes[OptinRecord] = (optinRecord: OptinRecord) => Json.obj(fields =
     "arn" -> optinRecord.arn,
     "status" -> optinRecord.status,
     "history" -> optinRecord.history)
 
 
-  implicit val formatOptinRecord: Format[OptinRecord] = Format(readsOptinRecord, writesOptinRecord)
+  implicit val format: Format[OptinRecord] = Format(reads, writes)
 }

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentmtdidentifiers.model
+package uk.gov.hmrc.agents.accessgroups
 
-import org.bson.types.ObjectId
 import org.scalatest.{FlatSpec, Matchers}
 import play.api.libs.json.{JsSuccess, Json}
+import uk.gov.hmrc.agentmtdidentifiers.model.Arn
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 class TaxGroupSpec extends FlatSpec with Matchers {
 
@@ -31,7 +32,7 @@ class TaxGroupSpec extends FlatSpec with Matchers {
   val user2: AgentUser = AgentUser("user2", "User 2")
   val client1: Client = Client("HMRC-MTD-VAT~VRN~101747641", "John Innes")
 
-  val id = new ObjectId()
+  val id = UUID.randomUUID()
   val now: LocalDateTime = LocalDateTime.now()
 
   "TaxServiceAccessGroup" should "serialise to JSON and deserialize from string" in {
@@ -47,10 +48,10 @@ class TaxGroupSpec extends FlatSpec with Matchers {
         now,
         agent,
         agent,
-        Some(Set(agent, user1, user2)),
+        Set(agent, user1, user2),
         service,
         automaticUpdates = false,
-        Some(Set(client1))
+        Set(client1)
       )
 
     val serialised = Json.toJson(accessGroup).toString
@@ -70,10 +71,10 @@ class TaxGroupSpec extends FlatSpec with Matchers {
         now,
         agent,
         agent,
-        Some(Set(agent, user1, user2)),
+        Set(agent, user1, user2),
         service,
         automaticUpdates = true,
-        None
+        Set.empty
       )
 
     val jsonString = Json.toJson(taxGroup).toString
@@ -93,16 +94,16 @@ class TaxGroupSpec extends FlatSpec with Matchers {
         now,
         agent,
         agent,
-        Some(Set(agent, user1, user2)),
+        Set(agent, user1, user2),
         service = service,
         automaticUpdates = false,
-        None
+        Set.empty
       )
 
-    val groupSummary = GroupSummary.fromAccessGroup(taxGroup)
+    val groupSummary = GroupSummary.of(taxGroup)
     groupSummary.taxService shouldBe Some(service)
-    groupSummary.groupId shouldBe id.toString
-    groupSummary.isTaxGroup() shouldBe true
+    groupSummary.groupId shouldBe id
+    groupSummary.isTaxGroup shouldBe true
     groupSummary.clientCount shouldBe None
     groupSummary.groupName shouldBe groupName
     groupSummary.teamMemberCount shouldBe 3
