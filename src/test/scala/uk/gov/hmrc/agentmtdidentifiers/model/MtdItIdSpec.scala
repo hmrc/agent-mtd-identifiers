@@ -26,7 +26,7 @@ class MtdItIdSpec extends AnyFlatSpec with Matchers {
   val validMtdItId: Gen[String] = Gen.listOfN(15, permittedChars).map(_.toArray).map(new String(_))
 
   it should "be true for a valid MTDITID" in {
-    forAll(validMtdItId) { mtditid =>
+    validMtdItId.map { mtditid =>
       MtdItId.isValid(mtditid) shouldBe true
     }
   }
