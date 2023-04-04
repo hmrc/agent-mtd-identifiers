@@ -21,7 +21,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.agentmtdidentifiers.model.InvitationId._
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 class InvitationIdSpec extends AnyFlatSpec with Matchers {
   val invWithoutPrefix = (prefix: Char) =>

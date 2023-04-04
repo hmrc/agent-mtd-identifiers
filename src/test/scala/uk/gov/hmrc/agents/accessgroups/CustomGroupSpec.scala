@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentmtdidentifiers.model
+package uk.gov.hmrc.agents.accessgroups
 
-import org.bson.types.ObjectId
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsSuccess, Json}
+import uk.gov.hmrc.agentmtdidentifiers.model.Arn
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 class CustomGroupSpec extends AnyFlatSpec with Matchers {
 
@@ -36,7 +37,7 @@ class CustomGroupSpec extends AnyFlatSpec with Matchers {
   val client3: Client = Client("HMRC-CGT-PD~CgtRef~XMCGTP123456789", "George Candy")
 
   val now: LocalDateTime = LocalDateTime.now()
-  val id = new ObjectId()
+  val id = UUID.randomUUID()
 
   "AccessGroup" should "serialise to JSON and deserialize from string" in {
 
@@ -49,8 +50,8 @@ class CustomGroupSpec extends AnyFlatSpec with Matchers {
         now,
         agent,
         agent,
-        Some(Set(agent, user1, user2)),
-        Some(Set(client1, client2, client3))
+        Set(agent, user1, user2),
+        Set(client1, client2, client3)
       )
 
     customGroup.isInstanceOf[AccessGroup] shouldBe true
@@ -70,14 +71,14 @@ class CustomGroupSpec extends AnyFlatSpec with Matchers {
         now,
         agent,
         agent,
-        Some(Set(agent, user1)),
-        Some(Set(client1, client2, client3))
+        Set(agent, user1),
+        Set(client1, client2, client3)
       )
 
-    val groupSummary = GroupSummary.fromAccessGroup(customGroup)
+    val groupSummary = GroupSummary.of(customGroup)
     groupSummary.taxService shouldBe None
-    groupSummary.groupId shouldBe id.toString
-    groupSummary.isTaxGroup() shouldBe false
+    groupSummary.groupId shouldBe id
+    groupSummary.isTaxGroup shouldBe false
     groupSummary.clientCount.get shouldBe 3
     groupSummary.groupName shouldBe groupName
     groupSummary.teamMemberCount shouldBe 2

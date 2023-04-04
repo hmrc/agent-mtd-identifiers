@@ -31,22 +31,23 @@ Arn.isValid("TABC0000001") // false
 
 #### Access group Types
 
-There are two core types of access groups:
-* Custom group (a list of clients & team members)
-* Tax group (a tax service key & a list of team members, and a list of excluded clients)
+These types are specific to agent services and exist to support the 'Access groups' (a.k.a. 'Granular permissions') feature.
 
-Both group types extend the common trait and can also be converted into a slimmed down [Group Summary](src/main/scala/uk/gov/hmrc/agentmtdidentifiers/model/GroupSummary.scala)
+There are two core types of access groups:
+* [Custom group](src/main/scala/uk/gov/hmrc/agents/accessgroups/CustomGroup.scala) (a list of clients & team members)
+* [Tax group](src/main/scala/uk/gov/hmrc/agents/accessgroups/TaxGroup.scala) (a tax service key & a list of team members, and a list of excluded clients)
+
+Both group types extend the common trait and can also be converted into a slimmed down [Group Summary](src/main/scala/uk/gov/hmrc/agents/accessgroups/GroupSummary.scala)
 
 ```scala
 trait AccessGroup {
-  def _id: ObjectId
+  def id: UUID
   def arn: Arn
   def groupName: String
   def created: LocalDateTime
   def lastUpdated: LocalDateTime
   def createdBy: AgentUser
   def lastUpdatedBy: AgentUser
-  def teamMembers: Option[Set[AgentUser]]
 }
 ```
 

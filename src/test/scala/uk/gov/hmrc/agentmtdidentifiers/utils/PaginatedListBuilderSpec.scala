@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.utils
 
+import uk.gov.hmrc.agents.accessgroups.Client
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.agentmtdidentifiers.model.Client
+
 
 class PaginatedListBuilderSpec extends AnyWordSpecLike with Matchers {
 

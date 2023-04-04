@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.agentmtdidentifiers.model
+package uk.gov.hmrc.agents.accessgroups.optin
 
+import uk.gov.hmrc.agentmtdidentifiers.model.Arn
+import uk.gov.hmrc.agents.accessgroups.AgentUser
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 

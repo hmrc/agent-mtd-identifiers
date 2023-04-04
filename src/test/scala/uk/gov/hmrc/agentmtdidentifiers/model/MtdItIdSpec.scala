@@ -19,7 +19,6 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalacheck._
-import org.scalatest.Inspectors.forAll
 
 class MtdItIdSpec extends AnyFlatSpec with Matchers {
 
@@ -29,7 +28,7 @@ class MtdItIdSpec extends AnyFlatSpec with Matchers {
   it should "be true for a valid MTDITID" in {
     forAll(validMtdItId) { mtditid =>
       MtdItId.isValid(mtditid) shouldBe true
-    } //TODO
+    }
   }
 
   it should "be false when it has more than 15 digits" in {
