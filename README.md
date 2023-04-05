@@ -7,6 +7,8 @@ Micro-library for typing and validating UK tax identifiers within the Agents dom
 
 Now also includes support for access groups (aka granular permissions) in the Agent Services Account
 
+*** test java 11 do not merge **
+
 #### Identifier Types
 
 Types are provided for many common tax identifiers, such as:
