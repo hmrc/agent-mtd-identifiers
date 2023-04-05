@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class VrnSpec extends FlatSpec with Matchers {
+class VrnSpec extends AnyFlatSpec with Matchers {
 
   val reference97 = "101747696"
   val reference9755 = "101747641"

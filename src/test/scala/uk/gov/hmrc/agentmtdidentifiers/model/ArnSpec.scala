@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ArnSpec extends FlatSpec with Matchers {
+class ArnSpec extends AnyFlatSpec with Matchers {
 
   it should "be true for a valid ARN" in {
     Arn.isValid("TARN0000001") shouldBe true

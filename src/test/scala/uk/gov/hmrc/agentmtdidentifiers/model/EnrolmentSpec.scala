@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Json
 
-class EnrolmentSpec extends FlatSpec with Matchers {
+class EnrolmentSpec extends AnyFlatSpec with Matchers {
 
   "Enrolment" should "serialise to JSON" in {
     val enrolment = Enrolment("HMRC-MTD-IT", "Active", "myName", List(Identifier("MTDITID", "XX12345")))

@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.agents.accessgroups
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsSuccess, Json}
 import uk.gov.hmrc.agentmtdidentifiers.model.Arn
 
 import java.time.LocalDateTime
 import java.util.UUID
 
-class TaxGroupSpec extends FlatSpec with Matchers {
+class TaxGroupSpec extends AnyFlatSpec with Matchers {
 
   val arn: Arn = Arn("KARN1234567")
   val groupName = "some group"

@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class UtrSpec extends FlatSpec with Matchers {
+class UtrSpec extends AnyFlatSpec with Matchers {
 
   it should "be true for a valid UTR" in {
     Utr.isValid("2000000000") shouldBe true

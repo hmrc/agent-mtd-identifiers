@@ -17,12 +17,13 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 import java.nio.charset.StandardCharsets
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.agentmtdidentifiers.model.InvitationId._
 
 import java.time.LocalDate
 
-class InvitationIdSpec extends FlatSpec with Matchers {
+class InvitationIdSpec extends AnyFlatSpec with Matchers {
   val invWithoutPrefix = (prefix: Char) =>
     InvitationId.create("myAgency", "clientId", "service", LocalDate.parse("2001-01-01").atStartOfDay())(prefix)
 

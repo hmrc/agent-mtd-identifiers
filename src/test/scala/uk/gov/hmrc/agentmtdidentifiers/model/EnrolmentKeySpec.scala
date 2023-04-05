@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class EnrolmentKeySpec extends FlatSpec with Matchers {
+class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
 
   "EnrolmentKey" should "generate enrolment keys correctly" in {
     EnrolmentKey.enrolmentKey("HMRC-MTD-IT", "someId") shouldBe "HMRC-MTD-IT~MTDITID~someId"

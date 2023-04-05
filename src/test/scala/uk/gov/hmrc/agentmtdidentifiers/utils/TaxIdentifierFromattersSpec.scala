@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.utils
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.agentmtdidentifiers.model.{Arn, Utr}
 
 import uk.gov.hmrc.agentmtdidentifiers.utils.TaxIdentifierFormatters.{ArnOps, UtrOps}
 
-class TaxIdentifierFormattersSpec extends FlatSpec with Matchers {
+class TaxIdentifierFormattersSpec extends AnyFlatSpec with Matchers {
 
   "Arn.prettifyStrict" should "return Some(hyphenated arn) if arn IS VALID" in {
     Arn("TARN0000001").prettifyStrict shouldBe Some("TARN-000-0001")

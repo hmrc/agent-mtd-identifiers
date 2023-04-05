@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.agents.accessgroups.optin
 
-import org.scalatest.{Matchers, WordSpecLike}
 import uk.gov.hmrc.agentmtdidentifiers.model.Arn
 import uk.gov.hmrc.agents.accessgroups.AgentUser
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.time.LocalDateTime
 
-class OptinRecordSpec extends WordSpecLike with Matchers {
+class OptinRecordSpec extends AnyWordSpecLike with Matchers {
 
   s"OptinRecord status" when {
 
