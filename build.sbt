@@ -1,7 +1,6 @@
 import sbt.Resolver
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
   Seq(   // Semicolon-separated list of regexs matching classes to exclude
@@ -14,12 +13,12 @@ lazy val scoverageSettings = {
 }
 
 val allDependencies = Seq(
-    "org.scalatest"        %% "scalatest"     % "3.2.15" % Test,
-    "org.pegdown"          % "pegdown"        % "1.6.0" % Test,
-    "org.scalacheck"       %% "scalacheck"    % "1.17.0" % Test,
     "com.typesafe.play"    %% "play-json"     % "2.9.2",
-    "uk.gov.hmrc"          %% "domain"        % "8.1.0-play-28",
-    "com.vladsch.flexmark" %  "flexmark-all"  % "0.62.2"    % Test
+    "uk.gov.hmrc"          %% "domain"        % "8.2.0-play-28",
+    "org.scalatest"        %% "scalatest"     % "3.2.15"         % Test,
+    "org.pegdown"          % "pegdown"        % "1.6.0"          % Test,
+    "org.scalacheck"       %% "scalacheck"    % "1.17.0"         % Test,
+    "com.vladsch.flexmark" %  "flexmark-all"  % "0.62.2"         % Test
   )
 
 val scala2_12 = "2.12.15"
