@@ -57,8 +57,17 @@ case class SuspensionDetails(suspensionStatus: Boolean, regimes: Option[Set[Stri
 
 object SuspensionDetails {
 
-  lazy val serviceToRegime: Map[Service, String] =
-    Map(MtdIt -> "ITSA", Vat -> "VATC", Trust -> "TRS", TrustNT -> "TRS", CapitalGains -> "CGT", PersonalIncomeRecord -> "PIR", Ppt -> "PPT")
+  lazy val serviceToRegime: Map[Service, String] = Map(
+    MtdIt                -> "ITSA",
+    Vat                  -> "VATC",
+    Trust                -> "TRS",
+    TrustNT              -> "TRS",
+    CapitalGains         -> "CGT",
+    PersonalIncomeRecord -> "PIR",
+    Ppt                  -> "PPT",
+    Cbc                  -> "CBC",
+    CbcNonUk             -> "CBC"
+  )
 
   private val suspendableServices = Seq(MtdIt, Vat, Trust, CapitalGains, PersonalIncomeRecord, Ppt)
 
