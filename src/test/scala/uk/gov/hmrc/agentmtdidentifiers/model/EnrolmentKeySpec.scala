@@ -18,28 +18,31 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import uk.gov.hmrc.agentmtdidentifiers.model.EnrolmentKey.{deconstruct, enrolmentKey}
+import uk.gov.hmrc.agentmtdidentifiers.model.IdentifierKeys._
+import uk.gov.hmrc.agentmtdidentifiers.model.Service._
 
 class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
 
   "EnrolmentKey" should "generate enrolment keys correctly" in {
-    EnrolmentKey.enrolmentKey("HMRC-MTD-IT", "someId") shouldBe "HMRC-MTD-IT~MTDITID~someId"
-    EnrolmentKey.enrolmentKey("HMRC-MTD-VAT", "someId") shouldBe "HMRC-MTD-VAT~VRN~someId"
-    EnrolmentKey.enrolmentKey("HMRC-TERS-ORG", "someId") shouldBe "HMRC-TERS-ORG~SAUTR~someId"
-    EnrolmentKey.enrolmentKey("HMRC-TERSNT-ORG", "someId") shouldBe "HMRC-TERSNT-ORG~URN~someId"
-    EnrolmentKey.enrolmentKey("HMRC-CGT-PD", "someId") shouldBe "HMRC-CGT-PD~CGTPDRef~someId"
-    EnrolmentKey.enrolmentKey("HMRC-PPT-ORG", "someId") shouldBe "HMRC-PPT-ORG~EtmpRegistrationNumber~someId"
-    EnrolmentKey.enrolmentKey("HMRC-PT", "someId") shouldBe "HMRC-PT~NINO~someId"
-    an[Exception] shouldBe thrownBy(EnrolmentKey.enrolmentKey("badServiceId", "someId"))
+    enrolmentKey(HMRC_MTD_IT, "someId") shouldBe s"$HMRC_MTD_IT~$mtdItId~someId"
+    enrolmentKey(HMRC_MTD_VAT, "someId") shouldBe s"$HMRC_MTD_VAT~$vrn~someId"
+    enrolmentKey(HMRC_TERS_ORG, "someId") shouldBe s"$HMRC_TERS_ORG~$sautr~someId"
+    enrolmentKey(HMRC_TERSNT_ORG, "someId") shouldBe s"$HMRC_TERSNT_ORG~$urn~someId"
+    enrolmentKey(HMRC_CGT_PD, "someId") shouldBe s"$HMRC_CGT_PD~$cgtPdRef~someId"
+    enrolmentKey(HMRC_PPT_ORG, "someId") shouldBe s"$HMRC_PPT_ORG~$etmpRegNum~someId"
+    enrolmentKey(HMRC_PT, "someId") shouldBe s"$HMRC_PT~$nino~someId"
+    an[Exception] shouldBe thrownBy(enrolmentKey("badServiceId", "someId"))
   }
   it should "deconstruct enrolment keys correctly" in {
-    EnrolmentKey.deconstruct("HMRC-MTD-IT~MTDITID~someId") shouldBe (("HMRC-MTD-IT", "someId"))
-    EnrolmentKey.deconstruct("HMRC-MTD-VAT~VRN~someId") shouldBe (("HMRC-MTD-VAT", "someId"))
-    EnrolmentKey.deconstruct("HMRC-TERS-ORG~SAUTR~someId") shouldBe (("HMRC-TERS-ORG", "someId"))
-    EnrolmentKey.deconstruct("HMRC-TERSNT-ORG~URN~someId") shouldBe (("HMRC-TERSNT-ORG", "someId"))
-    EnrolmentKey.deconstruct("HMRC-CGT-PD~CGTPDRef~someId") shouldBe (("HMRC-CGT-PD", "someId"))
-    EnrolmentKey.deconstruct("HMRC-PPT-ORG~EtmpRegistrationNumber~someId") shouldBe (("HMRC-PPT-ORG", "someId"))
-    EnrolmentKey.deconstruct("HMRC-PT~NINO~someId") shouldBe (("HMRC-PT", "someId"))
-    an[Exception] shouldBe thrownBy(EnrolmentKey.deconstruct("HMRC-FAKE-SVC~NINO~AB123456Z"))
+    deconstruct(s"$HMRC_MTD_IT~$mtdItId~someId") shouldBe ((HMRC_MTD_IT, "someId"))
+    deconstruct(s"$HMRC_MTD_VAT~$vrn~someId") shouldBe ((HMRC_MTD_VAT, "someId"))
+    deconstruct(s"$HMRC_TERS_ORG~$sautr~someId") shouldBe ((HMRC_TERS_ORG, "someId"))
+    deconstruct(s"$HMRC_TERSNT_ORG~$urn~someId") shouldBe ((HMRC_TERSNT_ORG, "someId"))
+    deconstruct(s"$HMRC_CGT_PD~$cgtPdRef~someId") shouldBe ((HMRC_CGT_PD, "someId"))
+    deconstruct(s"$HMRC_PPT_ORG~$etmpRegNum~someId") shouldBe ((HMRC_PPT_ORG, "someId"))
+    deconstruct(s"$HMRC_PT~$nino~someId") shouldBe ((HMRC_PT, "someId"))
+    an[Exception] shouldBe thrownBy(deconstruct("HMRC-FAKE-SVC~NINO~AB123456Z"))
   }
 }
 

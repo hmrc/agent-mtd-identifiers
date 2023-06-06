@@ -18,7 +18,7 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.agentmtdidentifiers.model.Service.{HMRCCGTPD, HMRCMTDIT}
+import uk.gov.hmrc.agentmtdidentifiers.model.Service.{HMRC_CGT_PD, HMRC_MTD_IT}
 
 class SuspensionDetailsSpec extends AnyWordSpec with Matchers {
 
@@ -87,39 +87,39 @@ class SuspensionDetailsSpec extends AnyWordSpec with Matchers {
     }
 
     "return true when the regime is suspended" in {
-      SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC"))).isRegimeSuspended(HMRCMTDIT) shouldBe true
+      SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC"))).isRegimeSuspended(HMRC_MTD_IT) shouldBe true
     }
 
     "return true when ALL regimes are suspended" in {
-      SuspensionDetails(suspensionStatus = true, Some(Set("ALL"))).isRegimeSuspended(HMRCMTDIT) shouldBe true
+      SuspensionDetails(suspensionStatus = true, Some(Set("ALL"))).isRegimeSuspended(HMRC_MTD_IT) shouldBe true
     }
 
     "return false when the regime is not suspended" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
-        .isRegimeSuspended(HMRCCGTPD) shouldBe false
+        .isRegimeSuspended(HMRC_CGT_PD) shouldBe false
     }
   }
 
   "suspendedRegimesForServices" should {
     "return only the suspended regimes" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
-        .suspendedRegimesForServices(Set(HMRCMTDIT, HMRCCGTPD)) shouldBe Set("ITSA")
+        .suspendedRegimesForServices(Set(HMRC_MTD_IT, HMRC_CGT_PD)) shouldBe Set("ITSA")
     }
 
     "return all of the regimes if ALL are suspended" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ALL")))
-        .suspendedRegimesForServices(Set(HMRCMTDIT, HMRCCGTPD)) shouldBe Set("ITSA", "CGT")
+        .suspendedRegimesForServices(Set(HMRC_MTD_IT, HMRC_CGT_PD)) shouldBe Set("ITSA", "CGT")
     }
   }
 
   "isAnyRegimeSuspendedForServices" should {
     "return true if the agent is suspended for any regimes in the consents" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
-        .isAnyRegimeSuspendedForServices(Set(HMRCMTDIT)) shouldBe true
+        .isAnyRegimeSuspendedForServices(Set(HMRC_MTD_IT)) shouldBe true
     }
     "return false if the agent is not suspended for any service in the consents" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
-        .isAnyRegimeSuspendedForServices(Set(HMRCCGTPD)) shouldBe false
+        .isAnyRegimeSuspendedForServices(Set(HMRC_CGT_PD)) shouldBe false
     }
   }
 
