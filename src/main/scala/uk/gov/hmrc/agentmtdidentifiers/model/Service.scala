@@ -38,10 +38,8 @@ sealed abstract class Service(
 
 object IdentifierKeys{
   val mtdItId = "MTDITID"
-  val hmrcNi = "HMRC-NI"
   val sautr = "SAUTR"
   val cgtPdRef = "CGTPDRef"
-  val hmrcAsAgent = "HMRC-AS-AGENT"
   val etmpRegNum = "EtmpRegistrationNumber"
   val urn = "URN"
   val cbcId = "cbcId"
@@ -61,6 +59,8 @@ object Service {
   val HMRC_PT = "HMRC-PT"
   val HMRC_CBC_ORG = "HMRC-CBC-ORG"
   val HMRC_CBC_NON_UK_ORG = "HMRC-CBC-NONUK-ORG"
+  val HMRC_NI = "HMRC-NI"
+  val HMRC_AS_AGENT = "HMRC-AS-AGENT"
 
   case object MtdIt extends Service(HMRC_MTD_IT, 'A', HMRC_MTD_IT, NinoType, MtdItIdType, true)
   case object PersonalIncomeRecord extends Service(HMRC_PIR, 'B', "HMRC-NI", NinoType, NinoType, false)
