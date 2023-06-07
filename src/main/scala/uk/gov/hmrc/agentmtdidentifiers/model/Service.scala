@@ -45,8 +45,6 @@ object IdentifierKeys{
   val cbcId = "cbcId"
   val nino = "NINO"
   val vrn = "VRN"
-  val vatRegNum = "VATRegNo"
-  val ni = "NI"
 }
 
 object Service {
@@ -64,7 +62,7 @@ object Service {
   val HMRC_NI = "HMRC-NI"
   val HMRC_AS_AGENT = "HMRC-AS-AGENT"
   val IR_SA = "IR-SA"
-  val HMRC_VAT_DEC_ORG = "HMCE-VATDEC-ORG"
+  val HMRC_VAT_DEC_ORG = "IR-HMCE-VATDEC-ORG"
 
   case object MtdIt extends Service(HMRC_MTD_IT, 'A', HMRC_MTD_IT, NinoType, MtdItIdType, true)
   case object PersonalIncomeRecord extends Service(HMRC_PIR, 'B', "HMRC-NI", NinoType, NinoType, false)
