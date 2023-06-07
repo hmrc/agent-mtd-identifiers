@@ -36,43 +36,43 @@ sealed abstract class Service(
     }
 }
 
-object IdentifierKeys{
-  val mtdItId = "MTDITID"
-  val sautr = "SAUTR"
-  val cgtPdRef = "CGTPDRef"
-  val etmpRegNum = "EtmpRegistrationNumber"
-  val urn = "URN"
-  val cbcId = "cbcId"
-  val nino = "NINO"
-  val vrn = "VRN"
-}
-
 object Service {
 
-  val HMRC_MTD_IT = "HMRC-MTD-IT"
-  val HMRC_PIR = "PERSONAL-INCOME-RECORD"
-  val HMRC_MTD_VAT = "HMRC-MTD-VAT"
-  val HMRC_TERS_ORG = "HMRC-TERS-ORG"
-  val HMRC_TERSNT_ORG = "HMRC-TERSNT-ORG"
-  val HMRC_CGT_PD = "HMRC-CGT-PD"
-  val HMRC_PPT_ORG = "HMRC-PPT-ORG"
-  val HMRC_PT = "HMRC-PT"
-  val HMRC_CBC_ORG = "HMRC-CBC-ORG"
-  val HMRC_CBC_NON_UK_ORG = "HMRC-CBC-NONUK-ORG"
-  val HMRC_NI = "HMRC-NI"
-  val HMRC_AS_AGENT = "HMRC-AS-AGENT"
-  val IR_SA = "IR-SA"
-  val HMRC_VAT_DEC_ORG = "IR-HMCE-VATDEC-ORG"
+  val HMRCMTDIT = "HMRC-MTD-IT"
 
-  case object MtdIt extends Service(HMRC_MTD_IT, 'A', HMRC_MTD_IT, NinoType, MtdItIdType, true)
-  case object PersonalIncomeRecord extends Service(HMRC_PIR, 'B', "HMRC-NI", NinoType, NinoType, false)
-  case object Vat extends Service(HMRC_MTD_VAT, 'C', HMRC_MTD_VAT, VrnType, VrnType, false)
-  case object Trust extends Service(HMRC_TERS_ORG, 'D', HMRC_TERS_ORG, UtrType, UtrType, false)
-  case object TrustNT extends Service(HMRC_TERSNT_ORG, 'F', HMRC_TERSNT_ORG, UrnType, UrnType, false)
-  case object CapitalGains extends Service(HMRC_CGT_PD, 'E', HMRC_CGT_PD, CgtRefType, CgtRefType, true)
-  case object Ppt extends Service(HMRC_PPT_ORG, 'G', HMRC_PPT_ORG, PptRefType, PptRefType, true)
-  case object Cbc extends Service(HMRC_CBC_ORG, 'H', HMRC_CBC_ORG, CbcIdType, CbcIdType, true)
-  case object CbcNonUk extends Service(HMRC_CBC_NON_UK_ORG, 'I', HMRC_CBC_NON_UK_ORG, CbcIdType, CbcIdType, true)
+  val HMRCPIR = "PERSONAL-INCOME-RECORD"
+
+  val HMRCMTDVAT = "HMRC-MTD-VAT"
+
+  val HMRCTERSORG = "HMRC-TERS-ORG"
+
+  val HMRCTERSNTORG = "HMRC-TERSNT-ORG"
+
+  val HMRCCGTPD = "HMRC-CGT-PD"
+
+  val HMRCPPTORG = "HMRC-PPT-ORG"
+
+  val HMRCCBCORG = "HMRC-CBC-ORG"
+
+  val HMRCCBCNONUKORG = "HMRC-CBC-NONUK-ORG"
+
+  case object MtdIt extends Service("HMRC-MTD-IT", 'A', "HMRC-MTD-IT", NinoType, MtdItIdType, true)
+
+  case object PersonalIncomeRecord extends Service("PERSONAL-INCOME-RECORD", 'B', "HMRC-NI", NinoType, NinoType, false)
+
+  case object Vat extends Service("HMRC-MTD-VAT", 'C', "HMRC-MTD-VAT", VrnType, VrnType, false)
+
+  case object Trust extends Service("HMRC-TERS-ORG", 'D', "HMRC-TERS-ORG", UtrType, UtrType, false)
+
+  case object TrustNT extends Service("HMRC-TERSNT-ORG", 'F', "HMRC-TERSNT-ORG", UrnType, UrnType, false)
+
+  case object CapitalGains extends Service("HMRC-CGT-PD", 'E', "HMRC-CGT-PD", CgtRefType, CgtRefType, true)
+
+  case object Ppt extends Service("HMRC-PPT-ORG", 'G', "HMRC-PPT-ORG", PptRefType, PptRefType, true)
+
+  case object Cbc extends Service("HMRC-CBC-ORG", 'H', "HMRC-CBC-ORG", CbcIdType, CbcIdType, true)
+
+  case object CbcNonUk extends Service("HMRC-CBC-NONUK-ORG", 'I', "HMRC-CBC-NONUK-ORG", CbcIdType, CbcIdType, true)
 
   val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt, Cbc, CbcNonUk)
 
