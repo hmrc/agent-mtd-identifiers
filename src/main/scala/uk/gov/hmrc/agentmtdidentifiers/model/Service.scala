@@ -101,7 +101,7 @@ sealed abstract class ClientIdType[+T <: TaxIdentifier](
 }
 
 object ClientIdType {
-  val supportedTypes = Seq(NinoType, MtdItIdType, VrnType, UtrType, UrnType, CgtRefType, PptRefType)
+  val supportedTypes = Seq(NinoType, MtdItIdType, VrnType, UtrType, UrnType, CgtRefType, PptRefType, CbcIdType)
   def forId(id: String) =
     supportedTypes.find(_.id == id).getOrElse(throw new IllegalArgumentException("Invalid id:" + id))
 }
