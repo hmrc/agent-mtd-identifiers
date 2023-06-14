@@ -17,15 +17,14 @@
 package uk.gov.hmrc.agentmtdidentifiers.model
 
 object EnrolmentKey {
-  def enrolmentKey(serviceId: String, clientId: String): String = serviceId match {
-    case "HMRC-MTD-IT"     => "HMRC-MTD-IT~MTDITID~" + clientId
-    case "HMRC-MTD-VAT"    => "HMRC-MTD-VAT~VRN~" + clientId
-    case "HMRC-TERS-ORG"   => "HMRC-TERS-ORG~SAUTR~" + clientId
-    case "HMRC-TERSNT-ORG" => "HMRC-TERSNT-ORG~URN~" + clientId
-    case "HMRC-CGT-PD"     => "HMRC-CGT-PD~CGTPDRef~" + clientId
-    case "HMRC-PPT-ORG"    => "HMRC-PPT-ORG~EtmpRegistrationNumber~" + clientId
-    case "HMRC-PT"         => "HMRC-PT~NINO~" + clientId
-    case _                 => throw new IllegalArgumentException(s"Service not supported: $serviceId")
+  def enrolmentKey(serviceId: String, clientId: String): String = {
+    val mService = Service.findById(serviceId)
+    mService match {
+      // case Some(Service.Cbc) => // TODO in future the enrolment key for HMRC-CBC-ORG will need to also take an UTR
+      case Some(service)                  => s"${service.id}~${service.supportedClientIdType.enrolmentId}~" + clientId
+      case None if serviceId == "HMRC-PT" => "HMRC-PT~NINO~" + clientId
+      case _                              => throw new IllegalArgumentException(s"Service not supported: $serviceId")
+    }
   }
 
   def enrolmentKeys(enrolment: Enrolment): Seq[String] = enrolment.identifiers.map(identifier => enrolmentKey(enrolment.service, identifier.value))
