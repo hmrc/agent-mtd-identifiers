@@ -28,6 +28,8 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.enrolmentKey("HMRC-TERSNT-ORG", "someId") shouldBe "HMRC-TERSNT-ORG~URN~someId"
     EnrolmentKey.enrolmentKey("HMRC-CGT-PD", "someId") shouldBe "HMRC-CGT-PD~CGTPDRef~someId"
     EnrolmentKey.enrolmentKey("HMRC-PPT-ORG", "someId") shouldBe "HMRC-PPT-ORG~EtmpRegistrationNumber~someId"
+    // TODO intentionally not testing HMRC-CBC-ORG as we need to change it to also include a UTR.
+    EnrolmentKey.enrolmentKey("HMRC-CBC-NONUK-ORG", "someId") shouldBe "HMRC-CBC-NONUK-ORG~cbcId~someId"
     EnrolmentKey.enrolmentKey("HMRC-PT", "someId") shouldBe "HMRC-PT~NINO~someId"
     an[Exception] shouldBe thrownBy(EnrolmentKey.enrolmentKey("badServiceId", "someId"))
   }
@@ -38,6 +40,8 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.deconstruct("HMRC-TERSNT-ORG~URN~someId") shouldBe (("HMRC-TERSNT-ORG", "someId"))
     EnrolmentKey.deconstruct("HMRC-CGT-PD~CGTPDRef~someId") shouldBe (("HMRC-CGT-PD", "someId"))
     EnrolmentKey.deconstruct("HMRC-PPT-ORG~EtmpRegistrationNumber~someId") shouldBe (("HMRC-PPT-ORG", "someId"))
+    // TODO intentionally not testing HMRC-CBC-ORG as we need to change it to also include a UTR.
+    EnrolmentKey.deconstruct("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe (("HMRC-CBC-NONUK-ORG", "someId"))
     EnrolmentKey.deconstruct("HMRC-PT~NINO~someId") shouldBe (("HMRC-PT", "someId"))
     an[Exception] shouldBe thrownBy(EnrolmentKey.deconstruct("HMRC-FAKE-SVC~NINO~AB123456Z"))
   }
