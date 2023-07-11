@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
+/* Note: The functionality in this object should probably at some point be deprecated as we have developed
+   better functionality for enrolment key manipulation since, and also here lingers the assumption
+   of a single client id per enrolment key, which does not hold for all services. */
 object EnrolmentKey {
   def enrolmentKey(serviceId: String, clientId: String): String = {
     val mService = Service.findById(serviceId)
@@ -27,7 +30,7 @@ object EnrolmentKey {
     }
   }
 
-  def enrolmentKeys(enrolment: Enrolment): Seq[String] = enrolment.identifiers.map(identifier => enrolmentKey(enrolment.service, identifier.value))
+  def fromEnrolment(enrolment: Enrolment): String = s"${enrolment.service}~" + enrolment.identifiers.map(id => s"${id.key}~${id.value}").mkString("~")
 
   /**
    * Returns serviceId and clientId from a given enrolmentKey

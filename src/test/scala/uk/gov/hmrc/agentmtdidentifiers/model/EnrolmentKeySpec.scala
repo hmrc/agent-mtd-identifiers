@@ -45,6 +45,12 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.deconstruct("HMRC-PT~NINO~someId") shouldBe (("HMRC-PT", "someId"))
     an[Exception] shouldBe thrownBy(EnrolmentKey.deconstruct("HMRC-FAKE-SVC~NINO~AB123456Z"))
   }
+  it should "build enrolment keys from enrolments correctly" in {
+    val vatEnrolment = Enrolment("HMRC-MTD-VAT", "Activated", "Joe", Seq(Identifier("VRN", "123456789")))
+    EnrolmentKey.fromEnrolment(vatEnrolment) shouldBe "HMRC-MTD-VAT~VRN~123456789"
+    val cbcEnrolment = Enrolment("HMRC-CBC-ORG", "Activated", "Joe", Seq(Identifier("UTR", "0101010101"), Identifier("cbcId", "XACBC0123456789")))
+    EnrolmentKey.fromEnrolment(cbcEnrolment) shouldBe "HMRC-CBC-ORG~UTR~0101010101~cbcId~XACBC0123456789"
+  }
 }
 
 
