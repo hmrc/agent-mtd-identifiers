@@ -18,7 +18,8 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 /* Note: The functionality in this object should probably at some point be deprecated as we have developed
    better functionality for enrolment key manipulation since, and also here lingers the assumption
-   of a single client id per enrolment key, which does not hold for all services. */
+   of a single client id per enrolment key, which does not hold for all services.
+   Do not use the functionality below in new code. */
 object EnrolmentKey {
   def enrolmentKey(serviceId: String, clientId: String): String = {
     val mService = Service.findById(serviceId)
@@ -33,14 +34,16 @@ object EnrolmentKey {
   def fromEnrolment(enrolment: Enrolment): String = s"${enrolment.service}~" + enrolment.identifiers.map(id => s"${id.key}~${id.value}").mkString("~")
 
   /**
-   * Returns serviceId and clientId from a given enrolmentKey
+   * Returns the serviceId of a given enrolmentKey
    */
-  def deconstruct(ek: String): (String, String) = {
-    val serviceId = ek.takeWhile(_ != '~')
-    val clientId = ek.split('~').last
-    // sanity check: try to reconstruct the original enrolment key
-    if (enrolmentKey(serviceId, clientId).toUpperCase != ek.toUpperCase)
-      throw new IllegalArgumentException(s"Unexpected enrolment key format: $ek")
-    (serviceId, clientId)
+  def serviceOf(ek: String): String = ek.takeWhile(_ != '~')
+
+  /**
+   * Returns the identifiers of a given enrolmentKey
+   */
+  def identifiersOf(ek: String): Seq[Identifier] = {
+    val parts = ek.split('~')
+    if (parts.length % 2 == 0 /* is even */ || parts.length < 3) throw new IllegalArgumentException(s"Invalid enrolment key: $ek")
+    else ek.split('~').tail.grouped(2).map(xs => Identifier(xs(0), xs(1))).toSeq
   }
 }

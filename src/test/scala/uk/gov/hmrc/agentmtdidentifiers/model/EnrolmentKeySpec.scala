@@ -33,18 +33,32 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.enrolmentKey("HMRC-PT", "someId") shouldBe "HMRC-PT~NINO~someId"
     an[Exception] shouldBe thrownBy(EnrolmentKey.enrolmentKey("badServiceId", "someId"))
   }
-  it should "deconstruct enrolment keys correctly" in {
-    EnrolmentKey.deconstruct("HMRC-MTD-IT~MTDITID~someId") shouldBe (("HMRC-MTD-IT", "someId"))
-    EnrolmentKey.deconstruct("HMRC-MTD-VAT~VRN~someId") shouldBe (("HMRC-MTD-VAT", "someId"))
-    EnrolmentKey.deconstruct("HMRC-TERS-ORG~SAUTR~someId") shouldBe (("HMRC-TERS-ORG", "someId"))
-    EnrolmentKey.deconstruct("HMRC-TERSNT-ORG~URN~someId") shouldBe (("HMRC-TERSNT-ORG", "someId"))
-    EnrolmentKey.deconstruct("HMRC-CGT-PD~CGTPDRef~someId") shouldBe (("HMRC-CGT-PD", "someId"))
-    EnrolmentKey.deconstruct("HMRC-PPT-ORG~EtmpRegistrationNumber~someId") shouldBe (("HMRC-PPT-ORG", "someId"))
-    // TODO intentionally not testing HMRC-CBC-ORG as we need to change it to also include a UTR.
-    EnrolmentKey.deconstruct("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe (("HMRC-CBC-NONUK-ORG", "someId"))
-    EnrolmentKey.deconstruct("HMRC-PT~NINO~someId") shouldBe (("HMRC-PT", "someId"))
-    an[Exception] shouldBe thrownBy(EnrolmentKey.deconstruct("HMRC-FAKE-SVC~NINO~AB123456Z"))
+  it should "extract the service id correctly" in {
+    EnrolmentKey.serviceOf("HMRC-MTD-IT~MTDITID~someId") shouldBe "HMRC-MTD-IT"
+    EnrolmentKey.serviceOf("HMRC-MTD-VAT~VRN~someId") shouldBe "HMRC-MTD-VAT"
+    EnrolmentKey.serviceOf("HMRC-TERS-ORG~SAUTR~someId") shouldBe "HMRC-TERS-ORG"
+    EnrolmentKey.serviceOf("HMRC-TERSNT-ORG~URN~someId") shouldBe "HMRC-TERSNT-ORG"
+    EnrolmentKey.serviceOf("HMRC-CGT-PD~CGTPDRef~someId") shouldBe "HMRC-CGT-PD"
+    EnrolmentKey.serviceOf("HMRC-PPT-ORG~EtmpRegistrationNumber~someId") shouldBe "HMRC-PPT-ORG"
+    EnrolmentKey.serviceOf("HMRC-CBC-ORG~UTR~0123456789~cbcId~someId") shouldBe "HMRC-CBC-ORG"
+    EnrolmentKey.serviceOf("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe "HMRC-CBC-NONUK-ORG"
+    EnrolmentKey.serviceOf("HMRC-PT~NINO~someId") shouldBe "HMRC-PT"
   }
+  it should "extract the identifiers correctly" in {
+    EnrolmentKey.identifiersOf("HMRC-MTD-IT~MTDITID~someId") shouldBe Seq(Identifier("MTDITID", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-MTD-VAT~VRN~someId") shouldBe Seq(Identifier("VRN", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-TERS-ORG~SAUTR~someId") shouldBe Seq(Identifier("SAUTR", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-TERSNT-ORG~URN~someId") shouldBe Seq(Identifier("URN", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-CGT-PD~CGTPDRef~someId") shouldBe Seq(Identifier("CGTPDRef", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-PPT-ORG~EtmpRegistrationNumber~someId") shouldBe Seq(Identifier("EtmpRegistrationNumber", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-CBC-ORG~UTR~0123456789~cbcId~someId") shouldBe Seq(Identifier("UTR", "0123456789"), Identifier("cbcId", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe Seq(Identifier("cbcId", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-PT~NINO~someId") shouldBe Seq(Identifier("NINO", "someId"))
+    an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC")) // only one part
+    an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC~NINO")) // only two part
+    an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC~NINO~AB123456Z~anotherId")) // incorrect number of parts
+  }
+
   it should "build enrolment keys from enrolments correctly" in {
     val vatEnrolment = Enrolment("HMRC-MTD-VAT", "Activated", "Joe", Seq(Identifier("VRN", "123456789")))
     EnrolmentKey.fromEnrolment(vatEnrolment) shouldBe "HMRC-MTD-VAT~VRN~123456789"
