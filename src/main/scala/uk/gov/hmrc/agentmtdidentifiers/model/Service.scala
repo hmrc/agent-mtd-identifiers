@@ -72,7 +72,7 @@ object Service {
 
   case object Cbc extends Service("HMRC-CBC-ORG", 'H', "HMRC-CBC-ORG", CbcIdType, CbcIdType, true)
 
-  case object CbcNonUk extends Service("HMRC-CBC-NONUK-ORG", 'I', "HMRC-CBC-NONUK-ORG", CbcIdType, CbcIdType, true)
+  case object CbcNonUk extends Service("HMRC-CBC-NONUK-ORG", 'J', "HMRC-CBC-NONUK-ORG", CbcIdType, CbcIdType, true)
 
   val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt, Cbc, CbcNonUk)
 
