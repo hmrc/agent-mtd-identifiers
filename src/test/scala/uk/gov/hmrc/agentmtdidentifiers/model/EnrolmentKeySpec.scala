@@ -31,6 +31,7 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     // TODO intentionally not testing HMRC-CBC-ORG as we need to change it to also include a UTR.
     EnrolmentKey.enrolmentKey("HMRC-CBC-NONUK-ORG", "someId") shouldBe "HMRC-CBC-NONUK-ORG~cbcId~someId"
     EnrolmentKey.enrolmentKey("HMRC-PT", "someId") shouldBe "HMRC-PT~NINO~someId"
+    EnrolmentKey.enrolmentKey("HMRC-PILLAR2-ORG", "anId") shouldBe "HMRC-PILLAR2-ORG~PLRID~anId"
     an[Exception] shouldBe thrownBy(EnrolmentKey.enrolmentKey("badServiceId", "someId"))
   }
   it should "extract the service id correctly" in {
@@ -42,6 +43,7 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.serviceOf("HMRC-PPT-ORG~EtmpRegistrationNumber~someId") shouldBe "HMRC-PPT-ORG"
     EnrolmentKey.serviceOf("HMRC-CBC-ORG~UTR~0123456789~cbcId~someId") shouldBe "HMRC-CBC-ORG"
     EnrolmentKey.serviceOf("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe "HMRC-CBC-NONUK-ORG"
+    EnrolmentKey.serviceOf("HMRC-PILLAR2-ORG~PLRID~someId") shouldBe "HMRC-PILLAR2-ORG"
     EnrolmentKey.serviceOf("HMRC-PT~NINO~someId") shouldBe "HMRC-PT"
   }
   it should "extract the identifiers correctly" in {
@@ -53,6 +55,7 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.identifiersOf("HMRC-PPT-ORG~EtmpRegistrationNumber~someId") shouldBe Seq(Identifier("EtmpRegistrationNumber", "someId"))
     EnrolmentKey.identifiersOf("HMRC-CBC-ORG~UTR~0123456789~cbcId~someId") shouldBe Seq(Identifier("UTR", "0123456789"), Identifier("cbcId", "someId"))
     EnrolmentKey.identifiersOf("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe Seq(Identifier("cbcId", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-PILLAR2-ORG~PLRID~someId") shouldBe Seq(Identifier("PLRID", "someId"))
     EnrolmentKey.identifiersOf("HMRC-PT~NINO~someId") shouldBe Seq(Identifier("NINO", "someId"))
     an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC")) // only one part
     an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC~NINO")) // only two part
