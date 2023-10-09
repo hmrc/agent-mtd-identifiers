@@ -39,22 +39,15 @@ sealed abstract class Service(
 object Service {
 
   val HMRCMTDIT = "HMRC-MTD-IT"
-
   val HMRCPIR = "PERSONAL-INCOME-RECORD"
-
   val HMRCMTDVAT = "HMRC-MTD-VAT"
-
   val HMRCTERSORG = "HMRC-TERS-ORG"
-
   val HMRCTERSNTORG = "HMRC-TERSNT-ORG"
-
   val HMRCCGTPD = "HMRC-CGT-PD"
-
   val HMRCPPTORG = "HMRC-PPT-ORG"
-
   val HMRCCBCORG = "HMRC-CBC-ORG"
-
   val HMRCCBCNONUKORG = "HMRC-CBC-NONUK-ORG"
+  val HMRCPILLAR2ORG = "HMRC-PILLAR2-ORG"
 
   case object MtdIt extends Service("HMRC-MTD-IT", 'A', "HMRC-MTD-IT", NinoType, MtdItIdType, true)
 
@@ -74,19 +67,21 @@ object Service {
 
   case object CbcNonUk extends Service("HMRC-CBC-NONUK-ORG", 'J', "HMRC-CBC-NONUK-ORG", CbcIdType, CbcIdType, true)
 
-  val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt, Cbc, CbcNonUk)
+  case object Pillar2 extends Service(HMRCPILLAR2ORG, 'K', HMRCPILLAR2ORG, PlrIdType, PlrIdType,true)
+
+  val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt, Cbc, CbcNonUk, Pillar2)
 
   def findById(id: String): Option[Service] = supportedServices.find(_.id == id)
   def forId(id: String): Service = findById(id).getOrElse(throw new Exception("Not a valid service id: " + id))
   def forInvitationId(invitationId: InvitationId): Option[Service] =
     supportedServices.find(_.invitationIdPrefix == invitationId.value.head)
 
-  def apply(id: String) = forId(id)
+  def apply(id: String): Service = forId(id)
   def unapply(service: Service): Option[String] = Some(service.id)
 
   val reads = new SimpleObjectReads[Service]("id", Service.apply)
   val writes = new SimpleObjectWrites[Service](_.id)
-  implicit val format = Format(reads, writes)
+  implicit val format: Format[Service] = Format(reads, writes)
 
 }
 
@@ -99,7 +94,7 @@ sealed abstract class ClientIdType[+T <: TaxIdentifier](
 }
 
 object ClientIdType {
-  val supportedTypes = Seq(NinoType, MtdItIdType, VrnType, UtrType, UrnType, CgtRefType, PptRefType, CbcIdType)
+  val supportedTypes = Seq(NinoType, MtdItIdType, VrnType, UtrType, UrnType, CgtRefType, PptRefType, CbcIdType, PlrIdType)
   def forId(id: String) =
     supportedTypes.find(_.id == id).getOrElse(throw new IllegalArgumentException("Invalid id:" + id))
 }
@@ -113,15 +108,15 @@ case object MtdItIdType extends ClientIdType(classOf[MtdItId], "MTDITID", "MTDIT
 }
 
 case object VrnType extends ClientIdType(classOf[Vrn], "vrn", "VRN", Vrn.apply) {
-  override def isValid(value: String) = Vrn.isValid(value)
+  override def isValid(value: String): Boolean = Vrn.isValid(value)
 }
 
 case object UtrType extends ClientIdType(classOf[Utr], "utr", "SAUTR", Utr.apply) {
-  override def isValid(value: String) = value.matches("^\\d{10}$")
+  override def isValid(value: String): Boolean = value.matches("^\\d{10}$")
 }
 
 case object UrnType extends ClientIdType(classOf[Urn], "urn", "URN", Urn.apply) {
-  override def isValid(value: String) = value.matches("^([A-Z0-9]{1,15})$")
+  override def isValid(value: String): Boolean = value.matches("^([A-Z0-9]{1,15})$")
 }
 
 case object CgtRefType extends ClientIdType(classOf[CgtRef], "CGTPDRef", "CGTPDRef", CgtRef.apply) {
@@ -134,6 +129,10 @@ case object PptRefType extends ClientIdType(classOf[PptRef], "EtmpRegistrationNu
 
 case object CbcIdType extends ClientIdType(classOf[CbcId], "cbcId", "cbcId", CbcId.apply) {
   override def isValid(value: String): Boolean = CbcId.isValid(value)
+}
+
+case object PlrIdType extends ClientIdType(classOf[PlrId], "PLRID", "PLRID", PlrId.apply) {
+  override def isValid(value: String): Boolean = PlrId.isValid(value)
 }
 
 case class ClientIdentifier[T <: TaxIdentifier](underlying: T) {
