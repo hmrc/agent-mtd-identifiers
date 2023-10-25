@@ -24,9 +24,8 @@ sealed abstract class Service(
   val invitationIdPrefix: Char,
   val enrolmentKey: String,
   val supportedSuppliedClientIdType: ClientIdType[_ <: TaxIdentifier],
-  val supportedClientIdType: ClientIdType[_ <: TaxIdentifier],
-  val requiresKnownFactsCheck: Boolean) {
-
+  val supportedClientIdType: ClientIdType[_ <: TaxIdentifier]
+) {
   override def toString: String = this.id
 
   override def equals(that: Any): Boolean =
@@ -49,29 +48,30 @@ object Service {
   val HMRCCBCNONUKORG = "HMRC-CBC-NONUK-ORG"
   val HMRCPILLAR2ORG = "HMRC-PILLAR2-ORG"
 
-  case object MtdIt extends Service("HMRC-MTD-IT", 'A', "HMRC-MTD-IT", NinoType, MtdItIdType, true)
+  case object MtdIt extends Service("HMRC-MTD-IT", 'A', "HMRC-MTD-IT", NinoType, MtdItIdType)
 
-  case object PersonalIncomeRecord extends Service("PERSONAL-INCOME-RECORD", 'B', "HMRC-NI", NinoType, NinoType, false)
+  case object PersonalIncomeRecord extends Service("PERSONAL-INCOME-RECORD", 'B', "HMRC-NI", NinoType, NinoType)
 
-  case object Vat extends Service("HMRC-MTD-VAT", 'C', "HMRC-MTD-VAT", VrnType, VrnType, false)
+  case object Vat extends Service("HMRC-MTD-VAT", 'C', "HMRC-MTD-VAT", VrnType, VrnType)
 
-  case object Trust extends Service("HMRC-TERS-ORG", 'D', "HMRC-TERS-ORG", UtrType, UtrType, false)
+  case object Trust extends Service("HMRC-TERS-ORG", 'D', "HMRC-TERS-ORG", UtrType, UtrType)
 
-  case object TrustNT extends Service("HMRC-TERSNT-ORG", 'F', "HMRC-TERSNT-ORG", UrnType, UrnType, false)
+  case object TrustNT extends Service("HMRC-TERSNT-ORG", 'F', "HMRC-TERSNT-ORG", UrnType, UrnType)
 
-  case object CapitalGains extends Service("HMRC-CGT-PD", 'E', "HMRC-CGT-PD", CgtRefType, CgtRefType, true)
+  case object CapitalGains extends Service("HMRC-CGT-PD", 'E', "HMRC-CGT-PD", CgtRefType, CgtRefType)
 
-  case object Ppt extends Service("HMRC-PPT-ORG", 'G', "HMRC-PPT-ORG", PptRefType, PptRefType, true)
+  case object Ppt extends Service("HMRC-PPT-ORG", 'G', "HMRC-PPT-ORG", PptRefType, PptRefType)
 
-  case object Cbc extends Service("HMRC-CBC-ORG", 'H', "HMRC-CBC-ORG", CbcIdType, CbcIdType, true)
+  case object Cbc extends Service("HMRC-CBC-ORG", 'H', "HMRC-CBC-ORG", CbcIdType, CbcIdType)
 
-  case object CbcNonUk extends Service("HMRC-CBC-NONUK-ORG", 'J', "HMRC-CBC-NONUK-ORG", CbcIdType, CbcIdType, true)
+  case object CbcNonUk extends Service("HMRC-CBC-NONUK-ORG", 'J', "HMRC-CBC-NONUK-ORG", CbcIdType, CbcIdType)
 
-  case object Pillar2 extends Service(HMRCPILLAR2ORG, 'K', HMRCPILLAR2ORG, PlrIdType, PlrIdType,true)
+  case object Pillar2 extends Service("HMRC-PILLAR2-ORG", 'K', "HMRC-PILLAR2-ORG", PlrIdType, PlrIdType)
 
   val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt, Cbc, CbcNonUk, Pillar2)
 
   def findById(id: String): Option[Service] = supportedServices.find(_.id == id)
+
   def forId(id: String): Service = findById(id).getOrElse(throw new Exception("Not a valid service id: " + id))
   def forInvitationId(invitationId: InvitationId): Option[Service] =
     supportedServices.find(_.invitationIdPrefix == invitationId.value.head)

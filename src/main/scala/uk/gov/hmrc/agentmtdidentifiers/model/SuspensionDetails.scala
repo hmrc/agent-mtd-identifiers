@@ -66,16 +66,17 @@ object SuspensionDetails {
     PersonalIncomeRecord -> "PIR",
     Ppt                  -> "PPT",
     Cbc                  -> "CBC",
-    CbcNonUk             -> "CBC"
+    CbcNonUk             -> "CBC",
+    Pillar2              -> "PLR"
   )
 
-  private val suspendableServices = Seq(MtdIt, Vat, Trust, CapitalGains, PersonalIncomeRecord, Ppt)
+  private val suspendableServices = Seq(MtdIt, Vat, Trust, CapitalGains, PersonalIncomeRecord, Ppt, Pillar2)
 
   lazy val validSuspensionRegimes: Set[String] = serviceToRegime.filterKeys(suspendableServices.contains(_)).values.toSet
 
   implicit val formats: OFormat[SuspensionDetails] = Json.format
 
-  val notSuspended = SuspensionDetails(suspensionStatus = false, None)
+  val notSuspended: SuspensionDetails = SuspensionDetails(suspensionStatus = false, None)
 }
 
 case class SuspensionDetailsNotFound(message: String) extends Exception(message)
