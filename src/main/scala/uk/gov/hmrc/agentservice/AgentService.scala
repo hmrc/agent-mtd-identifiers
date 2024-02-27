@@ -19,9 +19,11 @@ package uk.gov.hmrc.agentservice
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraint
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json._
 import uk.gov.hmrc.agentservice.ValidationHelpers._
+import uk.gov.hmrc.agentservice.models.BusinessDetails
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
@@ -51,7 +53,9 @@ case class HodRequestConfig[T](url: String, jsonReads: Reads[HodResponse[T]])
 
 import play.api.libs.json.{Json, Reads, Writes, __}
 
-sealed trait CustomerDataCheckResponse
+sealed trait CustomerDataCheckResponse {
+  val hodResponseCode: Int
+}
 
 object CustomerDataCheckResponse {
   implicit val reads: Reads[CustomerDataCheckResponse] =
@@ -73,11 +77,12 @@ object CustomerDataCheckUnsuccessful {
   implicit val writes: Writes[CustomerDataCheckUnsuccessful] = Json.writes[CustomerDataCheckUnsuccessful]
 }
 case class CustomerDataCheckSuccess(
-                                   hodStatus: Int,
-                                     customerName: String,
+                                   hodResponseCode: Int,
+                                     customerName: Option[String],
                                      isUkCustomer: Option[Boolean],
                                      clientIdLkUp: Option[String],
-                                     knownFactSupplied: Boolean
+                                     knownFactSupplied: Boolean,
+                                   knownFactCheck: Option[Boolean]
                                    ) extends CustomerDataCheckResponse
 
 object CustomerDataCheckSuccess {
@@ -118,10 +123,13 @@ abstract class AgentService[T] {
   def identifyClientPageConfig(formWithErrors: Option[Form[IdentifyClient]]): IdentifyClientPageConfig
 
   def hodRequestConfig(clientId: String): HodRequestConfig[T]
+  def backupHodRequestConfig(clientId: String): Option[HodRequestConfig[T]]
 
   val knownFactCheckRequired: Boolean
 
-  val validateKnownFact: (String, T) => Boolean
+  val validateKnownFact: (Option[String], Option[T]) => Option[Boolean]
+
+  val supportedClientEnrolmentServiceKeys: List[String]
 }
 
 class VatService extends AgentService[LocalDate] {
@@ -155,13 +163,16 @@ class VatService extends AgentService[LocalDate] {
 
   override val knownFactCheckRequired: Boolean = true
 
-  override val validateKnownFact: (String, LocalDate) => Boolean = (s: String, t: LocalDate) =>
-    LocalDate.parse(s).isEqual(t)
+  override val validateKnownFact: (Option[String], Option[LocalDate]) => Option[Boolean] = (ms: Option[String], ot: Option[LocalDate]) =>
+    for {
+      s <- ms
+      t <- ot
+    } yield LocalDate.parse(s).isEqual(t)
 
-  private val constructUrl: String => String = (clientId: String) => s"/vat/customer/vrn/$clientId/information"
+  private val constructVatApiUri: String => String = (clientId: String) => s"/vat/customer/vrn/$clientId/information"
 
   override def hodRequestConfig(clientId: String): HodRequestConfig[LocalDate] = HodRequestConfig(
-    url = constructUrl(clientId),
+    url = constructVatApiUri(clientId),
     jsonReads = {
       (__ \ "approvedInformation").readNullable[JsObject].map {
         case Some(approvedInformation) =>
@@ -175,6 +186,11 @@ class VatService extends AgentService[LocalDate] {
       }
     }
   )
+
+  override def backupHodRequestConfig(clientId: String): Option[HodRequestConfig[LocalDate]] = Option.empty
+
+  override val supportedClientEnrolmentServiceKeys: List[String] = List("HMRC-MTD-VAT")
+
 }
 
 class ItsaService extends AgentService[String] {
@@ -204,14 +220,51 @@ class ItsaService extends AgentService[String] {
 
   override val knownFactCheckRequired: Boolean = true
 
-  override val validateKnownFact: (String, String) => Boolean = (s: String, t: String) => s.equals(t)
+  override val validateKnownFact: (Option[String], Option[String]) => Option[Boolean] = (ms: Option[String], ot: Option[String]) =>
+    for {
+      s <- ms
+      t <- ot
+    } yield s.equals(t)
 
-  private val constructUrl: String => String = (clientId: String) => s"/registration/business-details/nino/$clientId"
+  private val constructItsaApiUri: String => String = (clientId: String) => s"/registration/business-details/nino/$clientId"
 
   override def hodRequestConfig(clientId: String): HodRequestConfig[String] = HodRequestConfig(
-    url = constructUrl(clientId),
-    jsonReads = ???
+    url = constructItsaApiUri(clientId),
+    jsonReads = {
+      (__ \ "taxPayerDisplayResponse").readNullable[BusinessDetails].map {
+        case Some(businessDetails) =>
+          val addressDetails = businessDetails.businessData.headOption.flatMap(_.businessAddressDetails)
+          val isUkCustomer = addressDetails.map(_.countryCode == "GB")
+          val knownFact = if(isUkCustomer.contains(true)) addressDetails.flatMap(_.postalCode) else None
+          val clientIdLkUp = businessDetails.mtdId
+          val tradingName = businessDetails.businessData.headOption.flatMap(_.tradingName)
+          HodResponse(200, tradingName, knownFact, isUkCustomer, clientIdLkUp, None)
+        case _ => HodResponse.apply(200)
+      }
+    }
   )
+
+  private val constructCiDUri: String => String = (clientId: String) => s"/citizen-details/$clientId/designatory-details"
+  override def backupHodRequestConfig(clientId: String): Option[HodRequestConfig[String]] =
+    Option(
+      HodRequestConfig(url = constructItsaApiUri(clientId),
+        jsonReads = (
+          (__ \ "person" \ "firstName").readNullable[String] and
+            (__ \ "person" \ "lastName").readNullable[String] and
+            (__ \ "address" \ "country").readNullable[String] and
+                (__ \ "address" \ "postcode").readNullable[String])(
+          (firstName,lastName,country,postcode) => {
+            val name = for {
+              first <- firstName
+              last <- lastName
+            } yield s"$first $last"
+            val isUkCustomer = country.contains("GREAT BRITAIN")
+            val knownFact = if(isUkCustomer) postcode else None
+            HodResponse(200, name, knownFact, Option(isUkCustomer), None, None)
+          }
+        )
+      )
+    )
 }
 
 class CgtPdService extends AgentService[String] {
@@ -225,9 +278,15 @@ class CgtPdService extends AgentService[String] {
 
   override val knownFactCheckRequired: Boolean = true
 
-  override val validateKnownFact: (String, String) => Boolean = (s: String, t: String) => s.equals(t)
+  override val validateKnownFact: (Option[String], Option[String]) => Option[Boolean] = (ms: Option[String], ot: Option[String]) =>
+    for {
+      s <- ms
+      t <- ot
+    } yield s.equals(t)
 
   override def hodRequestConfig(clientId: String): HodRequestConfig[String] = ???
+
+  override def backupHodRequestConfig(clientId: String): Option[HodRequestConfig[String]] = ???
 }
 
 @Singleton
@@ -243,10 +302,10 @@ class AgentServiceSupport @Inject() {
 
   def hodRequestConfig(id: String)(clientId: String): HodRequestConfig[_] = getService(id).hodRequestConfig(clientId)
 
-  def knownFactCheck[T](id: String)(s: String, kf: T): Boolean  =
+  def knownFactCheck[T](id: String)(ms: Option[String], kf: Option[T]): Option[Boolean]  =
     (id, kf) match {
-      case ("vat",  x: LocalDate)   => vatService.validateKnownFact(s, x)
-      case ("itsa", x: String)      => itsaService.validateKnownFact(s, x)
-      case ("cgt",  x: String)      => cgtService.validateKnownFact(s, x)
+      case ("vat", x: Option[LocalDate])    => vatService.validateKnownFact(ms, x)
+      case ("itsa", x: Option[String])      => itsaService.validateKnownFact(ms, x)
+      case ("cgt",  x: Option[String])      => cgtService.validateKnownFact(ms, x)
     }
 }
