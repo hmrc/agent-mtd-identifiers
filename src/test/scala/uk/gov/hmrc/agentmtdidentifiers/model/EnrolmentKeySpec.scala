@@ -32,6 +32,7 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.enrolmentKey("HMRC-CBC-NONUK-ORG", "someId") shouldBe "HMRC-CBC-NONUK-ORG~cbcId~someId"
     EnrolmentKey.enrolmentKey("HMRC-PT", "someId") shouldBe "HMRC-PT~NINO~someId"
     EnrolmentKey.enrolmentKey("HMRC-PILLAR2-ORG", "anId") shouldBe "HMRC-PILLAR2-ORG~PLRID~anId"
+    EnrolmentKey.enrolmentKey("HMRC-MTD-IT-SUPP","someId") shouldBe "HMRC-MTD-IT-SUPP~MTDITID~someId"
     an[Exception] shouldBe thrownBy(EnrolmentKey.enrolmentKey("badServiceId", "someId"))
   }
   it should "extract the service id correctly" in {
@@ -45,6 +46,7 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.serviceOf("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe "HMRC-CBC-NONUK-ORG"
     EnrolmentKey.serviceOf("HMRC-PILLAR2-ORG~PLRID~someId") shouldBe "HMRC-PILLAR2-ORG"
     EnrolmentKey.serviceOf("HMRC-PT~NINO~someId") shouldBe "HMRC-PT"
+    EnrolmentKey.serviceOf("HMRC-MTD-IT-SUPP~MTDITID~someId") shouldBe "HMRC-MTD-IT-SUPP"
   }
   it should "extract the identifiers correctly" in {
     EnrolmentKey.identifiersOf("HMRC-MTD-IT~MTDITID~someId") shouldBe Seq(Identifier("MTDITID", "someId"))
@@ -57,6 +59,7 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.identifiersOf("HMRC-CBC-NONUK-ORG~cbcId~someId") shouldBe Seq(Identifier("cbcId", "someId"))
     EnrolmentKey.identifiersOf("HMRC-PILLAR2-ORG~PLRID~someId") shouldBe Seq(Identifier("PLRID", "someId"))
     EnrolmentKey.identifiersOf("HMRC-PT~NINO~someId") shouldBe Seq(Identifier("NINO", "someId"))
+    EnrolmentKey.identifiersOf("HMRC-MTD-IT-SUPP~MTDITID~someId") shouldBe Seq(Identifier("MTDITID","someId"))
     an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC")) // only one part
     an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC~NINO")) // only two part
     an[Exception] shouldBe thrownBy(EnrolmentKey.identifiersOf("HMRC-FAKE-SVC~NINO~AB123456Z~anotherId")) // incorrect number of parts
@@ -67,6 +70,8 @@ class EnrolmentKeySpec extends AnyFlatSpec with Matchers {
     EnrolmentKey.fromEnrolment(vatEnrolment) shouldBe "HMRC-MTD-VAT~VRN~123456789"
     val cbcEnrolment = Enrolment("HMRC-CBC-ORG", "Activated", "Joe", Seq(Identifier("UTR", "0101010101"), Identifier("cbcId", "XACBC0123456789")))
     EnrolmentKey.fromEnrolment(cbcEnrolment) shouldBe "HMRC-CBC-ORG~UTR~0101010101~cbcId~XACBC0123456789"
+    val mtdItSuppEnrolment = Enrolment("HMRC-MTD-IT-SUPP","Activated","Joe",Seq(Identifier("MTDITID","234567891")))
+    EnrolmentKey.fromEnrolment(mtdItSuppEnrolment) shouldBe "HMRC-MTD-IT-SUPP~MTDITID~234567891"
   }
 }
 
