@@ -47,6 +47,8 @@ object Service {
   val HMRCCBCORG = "HMRC-CBC-ORG"
   val HMRCCBCNONUKORG = "HMRC-CBC-NONUK-ORG"
   val HMRCPILLAR2ORG = "HMRC-PILLAR2-ORG"
+  val HMRCMTDITSUPP =  "HMRC-MTD-IT-SUPP"
+
 
   case object MtdIt extends Service("HMRC-MTD-IT", 'A', "HMRC-MTD-IT", NinoType, MtdItIdType)
 
@@ -68,7 +70,9 @@ object Service {
 
   case object Pillar2 extends Service("HMRC-PILLAR2-ORG", 'K', "HMRC-PILLAR2-ORG", PlrIdType, PlrIdType)
 
-  val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt, Cbc, CbcNonUk, Pillar2)
+  case object MtdItSupp extends Service("HMRC-MTD-IT-SUPP",'L',"HMRC-MTD-IT-SUPP",NinoType,MtdItIdType)
+
+  val supportedServices: Seq[Service] = Seq(MtdIt, Vat, PersonalIncomeRecord, Trust, TrustNT, CapitalGains, Ppt, Cbc, CbcNonUk, Pillar2, MtdItSupp)
 
   def findById(id: String): Option[Service] = supportedServices.find(_.id == id)
 
