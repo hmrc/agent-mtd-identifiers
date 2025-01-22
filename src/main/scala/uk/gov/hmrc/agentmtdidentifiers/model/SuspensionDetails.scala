@@ -59,6 +59,7 @@ object SuspensionDetails {
 
   lazy val serviceToRegime: Map[Service, String] = Map(
     MtdIt                -> "ITSA",
+    MtdItSupp            -> "ITSA",
     Vat                  -> "VATC",
     Trust                -> "TRS",
     TrustNT              -> "TRS",

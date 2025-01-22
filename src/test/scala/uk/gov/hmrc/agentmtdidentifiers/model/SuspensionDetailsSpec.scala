@@ -18,7 +18,7 @@ package uk.gov.hmrc.agentmtdidentifiers.model
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.agentmtdidentifiers.model.Service.{HMRCCGTPD, HMRCMTDIT}
+import uk.gov.hmrc.agentmtdidentifiers.model.Service.{HMRCCGTPD, HMRCMTDIT, HMRCMTDITSUPP}
 
 class SuspensionDetailsSpec extends AnyWordSpec with Matchers {
 
@@ -103,7 +103,7 @@ class SuspensionDetailsSpec extends AnyWordSpec with Matchers {
   "suspendedRegimesForServices" should {
     "return only the suspended regimes" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
-        .suspendedRegimesForServices(Set(HMRCMTDIT, HMRCCGTPD)) shouldBe Set("ITSA")
+        .suspendedRegimesForServices(Set(HMRCMTDIT, HMRCMTDITSUPP, HMRCCGTPD)) shouldBe Set("ITSA")
     }
 
     "return all of the regimes if ALL are suspended" in {
@@ -115,7 +115,7 @@ class SuspensionDetailsSpec extends AnyWordSpec with Matchers {
   "isAnyRegimeSuspendedForServices" should {
     "return true if the agent is suspended for any regimes in the consents" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
-        .isAnyRegimeSuspendedForServices(Set(HMRCMTDIT)) shouldBe true
+        .isAnyRegimeSuspendedForServices(Set(HMRCMTDITSUPP)) shouldBe true
     }
     "return false if the agent is not suspended for any service in the consents" in {
       SuspensionDetails(suspensionStatus = true, Some(Set("ITSA", "VATC")))
