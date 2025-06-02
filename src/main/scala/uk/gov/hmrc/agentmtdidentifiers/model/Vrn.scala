@@ -21,8 +21,8 @@ import uk.gov.hmrc.domain.{SimpleObjectReads, SimpleObjectWrites, TaxIdentifier}
 case class Vrn(value: String) extends TaxIdentifier
 
 object Vrn {
-  implicit val vrnReads = new SimpleObjectReads[Vrn]("value", Vrn.apply)
-  implicit val vrnWrites = new SimpleObjectWrites[Vrn](_.value)
+  implicit val vrnReads: SimpleObjectReads[Vrn] = new SimpleObjectReads[Vrn]("value", Vrn.apply)
+  implicit val vrnWrites: SimpleObjectWrites[Vrn] = new SimpleObjectWrites[Vrn](_.value)
 
   private[model] def regexCheck(vrn: String): Boolean = vrn.matches("[0-9]{9}")
 

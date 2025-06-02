@@ -45,6 +45,7 @@ case class SuspensionDetails(suspensionStatus: Boolean, regimes: Option[Set[Stri
 
   def suspendedRegimesForServices(serviceIds: Set[String]): Set[String] = {
     SuspensionDetails.serviceToRegime
+      .view
       .filterKeys(s => serviceIds.contains(s.id)).values.toSet
       .intersect(suspendedRegimes)
   }
@@ -73,7 +74,8 @@ object SuspensionDetails {
 
   private val suspendableServices = Seq(MtdIt, Vat, Trust, CapitalGains, PersonalIncomeRecord, Ppt, Pillar2)
 
-  lazy val validSuspensionRegimes: Set[String] = serviceToRegime.filterKeys(suspendableServices.contains(_)).values.toSet
+  lazy val validSuspensionRegimes: Set[String] =
+    serviceToRegime.view.filterKeys(suspendableServices.contains(_)).values.toSet
 
   implicit val formats: OFormat[SuspensionDetails] = Json.format
 
