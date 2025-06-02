@@ -3,16 +3,14 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 import SCoverageSettings.*
 import sbt.Keys.resolvers
 
-val scala2_13 = "2.13.12"
-
-ThisBuild / majorVersion     := 2
+ThisBuild / majorVersion     := 3
 ThisBuild / isPublicArtefact := true
-ThisBuild / scalaVersion     := scala2_13
+ThisBuild / scalaVersion     := "3.3.6"
 
 lazy val root = (project in file("."))
   .settings(
     name := "agent-mtd-identifiers",
-    libraryDependencies ++=LibDependencies.compile ++ LibDependencies.test,
+    libraryDependencies ++= LibDependencies.compile ++ LibDependencies.test,
     scoverageSettings,
     resolvers ++= Seq (
       Resolver.typesafeRepo("releases")

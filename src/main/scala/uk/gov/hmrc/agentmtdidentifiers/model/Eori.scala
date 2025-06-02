@@ -30,6 +30,6 @@ object Eori {
       case _               => false
     }
 
-  implicit val eoriReads = new SimpleObjectReads[Eori]("value", Eori.apply)
-  implicit val eoriWrites = new SimpleObjectWrites[Eori](_.value)
+  implicit val eoriReads: SimpleObjectReads[Eori] = new SimpleObjectReads[Eori]("value", Eori.apply)
+  implicit val eoriWrites: SimpleObjectWrites[Eori] = new SimpleObjectWrites[Eori](_.value)
 }

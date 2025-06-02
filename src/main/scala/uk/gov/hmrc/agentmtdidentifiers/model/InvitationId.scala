@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.agentmtdidentifiers.model
 
-import play.api.libs.functional.syntax._
-
 import play.api.libs.json.{Format, __}
+
 import java.security.MessageDigest
 import java.time.{Instant, LocalDateTime, ZoneOffset}
+import scala.collection.immutable.ArraySeq.unsafeWrapArray
 
 case class InvitationId(value: String)
 
@@ -28,14 +28,14 @@ object InvitationId {
   private def idWrites =
     (__ \ "value")
       .write[String]
-      .contramap((id: InvitationId) => id.value.toString)
+      .contramap((id: InvitationId) => id.value)
 
   private def idReads =
     (__ \ "value")
       .read[String]
       .map(x => InvitationId(x))
 
-  implicit val idFormats = Format(idReads, idWrites)
+  implicit val idFormats: Format[InvitationId] = Format(idReads, idWrites)
 
   private val pattern = "^[ABCDEFGHJKLMNOPRSTUWXYZ123456789]{13}$".r
 
@@ -48,7 +48,7 @@ object InvitationId {
     implicit prefix: Char): InvitationId = {
     val idUnhashed = s"$arn.$clientId,$serviceName-${timestamp.toInstant(ZoneOffset.UTC).toEpochMilli}"
     val idBytes = MessageDigest.getInstance("SHA-256").digest(idUnhashed.getBytes("UTF-8")).take(7)
-    val idChars = bytesTo5BitNums(idBytes).map(to5BitAlphaNumeric).mkString
+    val idChars = bytesTo5BitNums(unsafeWrapArray(idBytes)).map(to5BitAlphaNumeric).mkString
     val idWithPrefix = s"$prefix$idChars"
 
     InvitationId(s"$idWithPrefix${checksumDigits(idWithPrefix)}")

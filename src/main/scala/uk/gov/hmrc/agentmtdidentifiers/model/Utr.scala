@@ -31,8 +31,8 @@ object Utr {
       case _              => false
     }
 
-  implicit val utrReads = new SimpleObjectReads[Utr]("value", Utr.apply)
-  implicit val utrWrites = new SimpleObjectWrites[Utr](_.value)
+  implicit val utrReads: SimpleObjectReads[Utr] = new SimpleObjectReads[Utr]("value", Utr.apply)
+  implicit val utrWrites: SimpleObjectWrites[Utr] = new SimpleObjectWrites[Utr](_.value)
 }
 
 object UtrCheck extends Modulus11Check {
